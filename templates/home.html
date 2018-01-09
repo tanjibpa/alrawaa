@@ -14,7 +14,7 @@
                 <div class="home--content-inner">
                   <h3 class="product-list-item-name" title="{{ product }}">{{ product }}</h3>
 {#                  <h1>{% trans "Size &amp; Colours" context "Homepage title" %}</h1>#}
-                  <a class="btn btn-secondary home__button" href="#">{% trans "Shop now" context "Homepage action" %}</a>
+                  <a class="btn btn-secondary home__button" href="{{ product.get_absolute_url }}">{% trans "Shop now" context "Homepage action" %}</a>
                 </div>
               </div>
             </div>
@@ -32,9 +32,8 @@
             <div class="home--content">
               <div class="home--content-wrapper">
                 <div class="home--content-inner">
-                  <h3 class="product-list-item-name" title="{{ product }}">{{ product }}</h3>
-{#                  <h1>{% trans "Size &amp; Colours" context "Homepage title" %}</h1>#}
-                  <a class="btn btn-secondary home__button" href="#">{% trans "Shop now" context "Homepage action" %}</a>
+{#                <h3 class="product-list-item-name" title="{{ product }}">{{ product }}</h3>
+                  <a class="btn btn-secondary home__button" href="{{ product.get_absolute_url }}">{% trans "Shop now" context "Homepage action" %}</a>
                 </div>
               </div>
             </div>
