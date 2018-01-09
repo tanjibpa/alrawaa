@@ -9,12 +9,19 @@ from ..userprofile.models import User
 
 
 def home(request):
-    products = products_for_homepage()[:8]
+    products_main = products_for_homepage()
     products = products_with_availability(
-        products, discounts=request.discounts, local_currency=request.currency)
+        products_main[6:14], discounts=request.discounts, local_currency=request.currency)
+    products_first_row = products_with_availability(
+        products_main[0:3], discounts=request.discounts, local_currency=request.currency)
+    products_second_row = products_with_availability(
+        products_main[3:6], discounts=request.discounts, local_currency=request.currency)
     return TemplateResponse(
         request, 'home.html',
-        {'products': products, 'parent': None})
+        {'products': products,
+         'parent': None,
+         'products_first_row': products_first_row,
+         'products_second_row': products_second_row})
 
 
 @staff_member_required
