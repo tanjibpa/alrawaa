@@ -38,6 +38,13 @@ def products_for_homepage():
     return products
 
 
+def products_for_homepage_banner():
+    user = AnonymousUser()
+    products = products_with_details(user)
+    products = products.filter(is_bannered=True)
+    return products
+
+
 def get_product_images(product):
     """
     Returns list of product images that will be placed in product gallery

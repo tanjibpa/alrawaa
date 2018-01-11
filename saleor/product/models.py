@@ -129,6 +129,8 @@ class Product(models.Model, ItemRange):
         pgettext_lazy('Product field', 'updated at'), auto_now=True, null=True)
     is_featured = models.BooleanField(
         pgettext_lazy('Product field', 'is featured'), default=False)
+    is_bannered = models.BooleanField(
+        pgettext_lazy('Product field', 'is bannered'), default=False)
 
     objects = ProductManager()
 
