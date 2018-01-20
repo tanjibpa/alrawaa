@@ -42,7 +42,12 @@ def products_for_homepage_banner():
     user = AnonymousUser()
     products = products_with_details(user)
     products = products.filter(is_bannered=True)
-    return products
+    _products = []
+    for i in range(1, 7):
+        for product in products:
+            if product.banner_position == i:
+                _products.append(product)
+    return _products
 
 
 def get_product_images(product):
