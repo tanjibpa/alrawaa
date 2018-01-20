@@ -23,6 +23,24 @@ from . import forms
 
 
 @staff_member_required
+@permission_required('product.bannered_products')
+def product_bannered_list(request):
+    products = Product.objects.prefetch_related('images')
+    products = products.order_by('name')
+    product_classes = ProductClass.objects.all()
+    product_filter = ProductFilter(request.GET, queryset=products)
+    products = get_paginator_items(
+        product_filter.qs, settings.DASHBOARD_PAGINATE_BY,
+        request.GET.get('page'))
+    ctx = {
+        'bulk_action_form': forms.ProductBulkUpdate(),
+        'products': products, 'product_classes': product_classes,
+        'filter_set': product_filter,
+        'is_empty': not product_filter.queryset.exists()}
+    return TemplateResponse(request, 'dashboard/product/list.html', ctx)
+
+
+@staff_member_required
 @permission_required('product.view_properties')
 def product_class_list(request):
     classes = ProductClass.objects.all().prefetch_related(
@@ -240,6 +258,13 @@ def product_edit(request, pk):
         variant_errors = False
 
     if form.is_valid() and not variant_errors:
+        # check for banner position of other products
+        # if there exists another product with same position
+        # make that position null
+        if product.banner_position:
+            _product = Product.objects.filter(banner_position=product.banner_position)
+            # TODO
+
         product = form.save()
         if edit_variant:
             variant_form.save()
