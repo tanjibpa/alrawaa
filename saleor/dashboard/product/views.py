@@ -263,7 +263,9 @@ def product_edit(request, pk):
         # make that position null
         if product.banner_position:
             _product = Product.objects.filter(banner_position=product.banner_position)
-            # TODO
+            for p in _product:
+                p.banner_position = None
+                p.save()
 
         product = form.save()
         if edit_variant:
