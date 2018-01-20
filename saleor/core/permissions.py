@@ -6,6 +6,7 @@ MODELS_PERMISSIONS = [
     'order.edit_order',
     'product.view_category',
     'product.edit_category',
+    'product.bannered_products',
     'product.view_product',
     'product.edit_product',
     'product.view_properties',

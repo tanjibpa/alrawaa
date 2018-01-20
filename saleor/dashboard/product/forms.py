@@ -102,7 +102,11 @@ class ProductForm(forms.ModelForm):
         labels = {
             'is_published': pgettext_lazy('product form', 'Published'),
             'is_featured': pgettext_lazy(
-                'product form', 'Feature this product on homepage')}
+                'product form', 'Feature this product on homepage'),
+            'is_bannered': pgettext_lazy(
+                'product form', 'Add this product in homepage banner'),
+            'banner_position': pgettext_lazy('product form', 'Choose banner position')
+        }
 
     def __init__(self, *args, **kwargs):
         self.product_attributes = []
