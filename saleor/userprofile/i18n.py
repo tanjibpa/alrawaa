@@ -90,7 +90,7 @@ class AddressForm(forms.ModelForm):
         exclude = []
 
     phone = PossiblePhoneNumberFormField(
-        widget=PhonePrefixWidget, required=False)
+        widget=PhonePrefixWidget, required=True)
 
     def __init__(self, *args, **kwargs):
         autocomplete_type = kwargs.pop('autocomplete_type', None)
