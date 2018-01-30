@@ -5,9 +5,9 @@ from phonenumbers import COUNTRY_CODE_TO_REGION_CODE
 from .validators import validate_possible_number
 
 
-# phone_prefixes = [
-#     ('+{}'.format(k), '+{}'.format(k)) for
-#     (k, v) in sorted(COUNTRY_CODE_TO_REGION_CODE.items())]
+phone_prefixes = [
+    ('+{}'.format(k), '+{}'.format(k)) for
+    (k, v) in sorted(COUNTRY_CODE_TO_REGION_CODE.items())]
 
 class PhonePrefixWidget(PhoneNumberPrefixWidget):
     """
@@ -19,5 +19,5 @@ class PhonePrefixWidget(PhoneNumberPrefixWidget):
     template_name = 'userprofile/snippets/phone-prefix-widget.html'
 
     def __init__(self, attrs=None):
-        widgets = (TextInput(attrs={'disabled': True}), TextInput())
+        widgets = (Select(attrs=attrs, choices=phone_prefixes), TextInput())
         super(PhoneNumberPrefixWidget, self).__init__(widgets, attrs)
