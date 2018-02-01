@@ -29,7 +29,7 @@ def create_order(checkout):
         status=OrderStatus.OPEN, user=user, comment=pgettext_lazy(
             'Order status history entry', 'Order was placed'))
     order.send_confirmation_email()
-    return order, redirect('order:payment', token=order.token)
+    return order, redirect('order:create-password', token=order.token)
 
 
 def handle_order_placement(request, checkout):
