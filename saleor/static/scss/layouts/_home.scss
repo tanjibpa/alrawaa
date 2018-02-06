@@ -23,6 +23,25 @@
       color: white;
       padding-left: $global-padding;
       padding-right: $global-padding;
+      //&:hover {
+      //  opacity: 0.5;
+      //  color: $body-color;
+      //}
+  }
+  &--blur-img {
+    &:hover {
+      h3, a {
+        color: $gray-900;
+      }
+      img {
+        opacity: 1;
+        filter: blur(10px);
+        -webkit-filter: blur(10px);
+        -moz-filter: blur(10px);
+        -o-filter: blur(10px);
+        -ms-filter: blur(10px);
+      }
+    }
   }
   &--content {
     position:  absolute;
