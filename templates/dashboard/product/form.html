@@ -102,6 +102,12 @@
                 <div class="row">
                   {{ product_form.is_published|materializecss }}
                 </div>
+                <div class="row">
+                  {{ product_form.is_bannered|materializecss }} {# {{ product_form.banner_position|materializecss:"input-field s4" }} #}
+                </div>
+                <div class="row">
+                  {{ product_form.banner_position|materializecss:"input-field s4" }}
+                </div>
               </div>
             </div>
           </div>

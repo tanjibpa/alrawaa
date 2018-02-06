@@ -49,12 +49,13 @@
                         {% trans "Payment details" context "Order details link text" %}
                     </a>
                 {% else %}
-                    <a href="{% url "order:payment" token=order.token %}" class="btn primary">
-                        {% trans "Pay for order" context "Order details primary action" %}
-                    </a>
+{#                    <a href="{% url "order:payment" token=order.token %}" class="btn primary">#}
+                  {#                        {% trans "Pay for order" context "Order details primary action" %}#}
+                  {#                    </a>#}
                 {% endif %}
+              {% else %}
             {% endif %}
-            {% include "order/_ordered_items_table.html" %}
+          {% include "order/_ordered_items_table.html" %}
         </div>
     </div>
 {% endblock content %}

@@ -105,6 +105,14 @@ class ProductManager(models.Manager):
 
 
 class Product(models.Model, ItemRange):
+    BANNER_POSITIONS = (
+        (1, '1st'),
+        (2, '2nd'),
+        (3, '3rd'),
+        (4, '4th'),
+        (5, '5th'),
+        (6, '6th')
+    )
     product_class = models.ForeignKey(
         ProductClass, related_name='products',
         verbose_name=pgettext_lazy('Product field', 'product class'),
@@ -129,6 +137,10 @@ class Product(models.Model, ItemRange):
         pgettext_lazy('Product field', 'updated at'), auto_now=True, null=True)
     is_featured = models.BooleanField(
         pgettext_lazy('Product field', 'is featured'), default=False)
+    is_bannered = models.BooleanField(
+        pgettext_lazy('Product field', 'is bannered'), default=False)
+    banner_position = models.IntegerField(
+        pgettext_lazy('Product field', 'banner position'), choices=BANNER_POSITIONS, blank=True, null=True)
 
     objects = ProductManager()
 

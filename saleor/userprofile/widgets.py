@@ -9,7 +9,6 @@ phone_prefixes = [
     ('+{}'.format(k), '+{}'.format(k)) for
     (k, v) in sorted(COUNTRY_CODE_TO_REGION_CODE.items())]
 
-
 class PhonePrefixWidget(PhoneNumberPrefixWidget):
     """
     Overwrite widget to use choices with tuple in a simple form of "+XYZ: +XYZ"

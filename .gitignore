@@ -28,3 +28,9 @@ dist/
 /static/
 /saleor/static/assets/
 webpack-bundle.json
+
+# environment file
+.env
+
+# redis
+*.rdb
