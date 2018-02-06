@@ -146,6 +146,18 @@ class Order(models.Model, ItemSet):
             reverse('order:details', kwargs={'token': self.token}))
         emails.send_order_confirmation.delay(email, payment_url)
 
+    def send_shipped_email(self):
+        email = self.get_user_current_email()
+        payment_url = build_absolute_uri(
+            reverse('order:details', kwargs={'token': self.token}))
+        emails.send_shipped_confirmation.delay(email, payment_url)
+
+    def send_cancel_shipment_email(self):
+        email = self.get_user_current_email()
+        payment_url = build_absolute_uri(
+            reverse('order:details', kwargs={'token': self.token}))
+        emails.send_shipment_cancelled.delay(email, payment_url)
+
     def get_last_payment_status(self):
         last_payment = self.payments.last()
         if last_payment:
