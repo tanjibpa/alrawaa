@@ -67,6 +67,9 @@ EMAIL_BACKEND = email_config['EMAIL_BACKEND']
 EMAIL_USE_TLS = email_config['EMAIL_USE_TLS']
 EMAIL_USE_SSL = email_config['EMAIL_USE_SSL']
 
+MAILGUN_API_KEY = os.environ.get('MAILGUN_API_KEY')
+MAILGUN_DOMAIN_NAME = os.environ.get('MAILGUN_DOMAIN_NAME')
+
 ENABLE_SSL = ast.literal_eval(
     os.environ.get('ENABLE_SSL', 'False'))
 
