@@ -100,13 +100,13 @@
                 {% trans "Catalogue" context "Dashboard catalogue" %}
               </p>
               <ul>
-                {% if perms.product.view_banner %}
-                <li class="{% block menu_banners_class %}{% endblock %}">
-                  <a href="{% url 'dashboard:product-bannered-list' %}">
-                    {% trans "Bannered Products" context "Dashboard products list" %}
-                  </a>
-                </li>
-                {% endif %}
+{#                {% if perms.product.view_banner %}#}
+{#                <li class="{% block menu_banners_class %}{% endblock %}">#}
+{#                  <a href="{% url 'dashboard:product-bannered-list' %}">#}
+{#                    {% trans "Bannered Products" context "Dashboard products list" %}#}
+{#                  </a>#}
+{#                </li>#}
+{#                {% endif %}#}
                 {% if perms.product.view_product %}
                 <li class="{% block menu_products_class %}{% endblock %}">
                   <a href="{% url 'dashboard:product-list' %}">
