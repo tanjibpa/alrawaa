@@ -6,7 +6,7 @@
       <div class="row">
         {% for product, availability in products_first_row %}
         <div class="col-sm-12 col-md-4">
-          <div>
+          <div class="home--blur-img">
             <img class="img-responsive"
              src="{% product_first_image product method="crop" size="349x349" %}">
             <div class="home--content">
@@ -26,13 +26,13 @@
       <div class="row">
         {% for product, availability in products_second_row %}
         <div class="col-sm-12 col-md-4">
-          <div>
+          <div class="home--blur-img">
             <img class="img-responsive"
              src="{% product_first_image product method="crop" size="349x349" %}">
             <div class="home--content">
               <div class="home--content-wrapper">
                 <div class="home--content-inner">
-{#                <h3 class="product-list-item-name" title="{{ product }}">{{ product }}</h3>
+                  <h3 class="product-list-item-name" title="{{ product }}">{{ product }}</h3>
                   <a class="btn btn-secondary home__button" href="{{ product.get_absolute_url }}">{% trans "Shop now" context "Homepage action" %}</a>
                 </div>
               </div>
