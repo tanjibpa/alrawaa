@@ -30,6 +30,10 @@ def home(request):
          'products_second_row': products_second_row})
 
 
+def package_offer(request):
+    pass
+
+
 @staff_member_required
 def styleguide(request):
     return TemplateResponse(request, 'styleguide.html')
