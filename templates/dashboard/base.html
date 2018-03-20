@@ -114,6 +114,13 @@
                   </a>
                 </li>
                 {% endif %}
+                {% comment %} {% if perms.product.view_stock_location %}
+                <li class="{% block menu_location_class %}{% endblock %}">
+                  <a href="{% url 'dashboard:product-stock-location-list' %}">
+                  {% trans "Stock locations" context "Dashboard stock loactions list" %}
+                  </a>
+                </li>
+                {% endif %} {% endcomment %}
                 {% if perms.product.view_category %}
                 <li class="{% block menu_categories_class %}{% endblock %}">
                   <a href="{% url 'dashboard:category-list' %}">
