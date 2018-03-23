@@ -131,4 +131,6 @@ def category_index(request, path, category_id):
            'sort_by_choices': get_sort_by_choices(product_filter),
            'now_sorted_by': now_sorted_by,
            'is_descending': is_descending}
+    if category.name.lower() == "package offers":
+        return TemplateResponse(request, 'package_offer/index.html', ctx)
     return TemplateResponse(request, 'category/index.html', ctx)
