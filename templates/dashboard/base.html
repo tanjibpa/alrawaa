@@ -100,13 +100,6 @@
                 {% trans "Catalogue" context "Dashboard catalogue" %}
               </p>
               <ul>
-{#                {% if perms.product.view_banner %}#}
-{#                <li class="{% block menu_banners_class %}{% endblock %}">#}
-{#                  <a href="{% url 'dashboard:product-bannered-list' %}">#}
-{#                    {% trans "Bannered Products" context "Dashboard products list" %}#}
-{#                  </a>#}
-{#                </li>#}
-{#                {% endif %}#}
                 {% if perms.product.view_product %}
                 <li class="{% block menu_products_class %}{% endblock %}">
                   <a href="{% url 'dashboard:product-list' %}">
@@ -114,13 +107,13 @@
                   </a>
                 </li>
                 {% endif %}
-                {% comment %} {% if perms.product.view_stock_location %}
-                <li class="{% block menu_location_class %}{% endblock %}">
-                  <a href="{% url 'dashboard:product-stock-location-list' %}">
-                  {% trans "Stock locations" context "Dashboard stock loactions list" %}
+                {% if perms.product.view_product %}
+                <li class="{% block menu_package_offers_class %}{% endblock %}">
+                  <a href="{% url 'dashboard:package-offers-list' %}">
+                  {% trans "Package Offers" context "Dashboard package offers" %}
                   </a>
                 </li>
-                {% endif %} {% endcomment %}
+                {% endif %}
                 {% if perms.product.view_category %}
                 <li class="{% block menu_categories_class %}{% endblock %}">
                   <a href="{% url 'dashboard:category-list' %}">
