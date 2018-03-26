@@ -224,6 +224,13 @@ class Product(models.Model, ItemRange):
         return PriceRange(min(grosses), max(grosses))
 
 
+class PackageOffer(models.Model):
+    device = models.OneToOneField(Product, verbose_name='device for package offer')
+    eliquids = models.ManyToManyField(Product, verbose_name='eliquids for package offer')
+    coil = models.OneToOneField(Product, verbose_name='coil for package offer')
+    battery = models.OneToOneField(Product, verbose_name='battery for package offer')
+
+
 class ProductVariant(models.Model, Item):
     sku = models.CharField(
         pgettext_lazy('Product variant field', 'SKU'), max_length=32,
