@@ -22,22 +22,22 @@ from .filters import (
 from . import forms
 
 
-@staff_member_required
-@permission_required('product.bannered_products')
-def product_bannered_list(request):
-    products = Product.objects.prefetch_related('images')
-    products = products.order_by('name')
-    product_classes = ProductClass.objects.all()
-    product_filter = ProductFilter(request.GET, queryset=products)
-    products = get_paginator_items(
-        product_filter.qs, settings.DASHBOARD_PAGINATE_BY,
-        request.GET.get('page'))
-    ctx = {
-        'bulk_action_form': forms.ProductBulkUpdate(),
-        'products': products, 'product_classes': product_classes,
-        'filter_set': product_filter,
-        'is_empty': not product_filter.queryset.exists()}
-    return TemplateResponse(request, 'dashboard/product/list.html', ctx)
+# @staff_member_required
+# @permission_required('product.bannered_products')
+# def product_bannered_list(request):
+#     products = Product.objects.prefetch_related('images')
+#     products = products.order_by('name')
+#     product_classes = ProductClass.objects.all()
+#     product_filter = ProductFilter(request.GET, queryset=products)
+#     products = get_paginator_items(
+#         product_filter.qs, settings.DASHBOARD_PAGINATE_BY,
+#         request.GET.get('page'))
+#     ctx = {
+#         'bulk_action_form': forms.ProductBulkUpdate(),
+#         'products': products, 'product_classes': product_classes,
+#         'filter_set': product_filter,
+#         'is_empty': not product_filter.queryset.exists()}
+#     return TemplateResponse(request, 'dashboard/product/list.html', ctx)
 
 
 @staff_member_required
