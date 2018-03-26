@@ -11,6 +11,7 @@ from .discount.urls import urlpatterns as discount_urls
 from .search.urls import urlpatterns as search_urls
 from .sites.urls import urlpatterns as site_urls
 from .shipping.urls import urlpatterns as shipping_urls
+from .package_offers.urls import urlpatterns as package_offers_urls
 
 
 urlpatterns = [
@@ -26,4 +27,5 @@ urlpatterns = [
     url(r'^shipping/', include(shipping_urls)),
     url(r'^style-guide/', core_views.styleguide, name='styleguide'),
     url(r'^search/', include(search_urls)),
+    url(r'^package_offers/', include(package_offers_urls)),
 ]
