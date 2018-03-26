@@ -141,6 +141,8 @@ class Product(models.Model, ItemRange):
         pgettext_lazy('Product field', 'is bannered'), default=False)
     banner_position = models.IntegerField(
         pgettext_lazy('Product field', 'banner position'), choices=BANNER_POSITIONS, blank=True, null=True)
+    package_offer = models.BooleanField(
+        pgettext_lazy('Product field', 'package offer'), default=False)
 
     objects = ProductManager()
 
