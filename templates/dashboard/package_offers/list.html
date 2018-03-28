@@ -4,29 +4,20 @@
 {% load materializecss %}
 {% load staticfiles %}
 {% load utils %}
+{% load product_first_image from product_images %}
 
 {% block title %}
-  {% trans "Product types" context "Dashboard product types list" %} - {{ block.super }}
+  {% trans "Package offers" context "Dashboard package offers list" %} - {{ block.super }}
 {% endblock %}
 
 {% block body_class %}body-products{% endblock %}
 
-{% block menu_product_classes_class %}active{% endblock %}
-
-{% block header_extra %}
-  {% if perms.product.edit_properties %}
-  <div class="btn-fab-fixed">
-    <a class="btn-fab-default waves-effect waves-light" title="{% trans "Add product type" context "Product type list add button text" %}" href="{% url 'dashboard:product-class-add' %}">
-      <svg data-src="{% static "dashboard/images/add.svg" %}" />
-    </a>
-  </div>
-  {% endif %}
-{% endblock %}
+{% block menu_package_offers_class %}active{% endblock %}
 
 {% block breadcrumbs %}
   <ul class="breadcrumbs">
     <li class="visible-s">
-      {% trans "Product types" context "Dashboard product types list" %}
+      {% trans "Package offers" context "Dashboard package offers list" %}
     </li>
   </ul>
 {% endblock %}
@@ -34,5 +25,86 @@
 {% block menu_catalogue_class %} active{% endblock %}
 
 {% block content %}
-  <p>PACKAGES</p>
+  <div class="row">
+    <div class="col s12 l9" id="product-list">
+    {% if products %}
+      <div class="card">
+{#        <form method="POST" action="{% url 'dashboard:product-bulk-update' %}" novalidate id="bulk-actions-form">#}
+{#          {% csrf_token %}#}
+{#          <input name="action" type="hidden" id="bulk-action" />#}
+{#          <nav class="data-table-header-alternative single">#}
+{#            <div class="bulk-info show-bulk">#}
+{#              <div class="data-table-header-action-selected-items col inline"></div>#}
+{#            </div>#}
+{#            <div class="bulk-actions show-bulk nav-wrapper">#}
+{#              <ul class="right">#}
+{#                {% for action, label in bulk_action_form.action.field.widget.choices %}#}
+{#                  <li>#}
+{#                    <a href="" data-action="{{ action }}" class="btn-flat waves-effect">{{ label|upper }}</a>#}
+{#                  </li>#}
+{#                {% endfor %}#}
+{#              </ul>#}
+{#            </div>#}
+{#          </nav>#}
+          <div class="data-table-container">
+            <table class="bordered highlight responsive data-table last-right-align">
+          <thead>
+            <tr>
+{#              <th class="bulk-checkbox">#}
+{#                <input id="select-all-products" type="checkbox" class="filled-in select-all switch-actions select-item">#}
+{#                <label for="select-all-products"></label>#}
+{#              </th>#}
+              <th></th>
+              {% trans "Name" context "Products list table header" as label %}
+              {% sorting_header 'name' label is_wide=True %}
+
+              {% trans "Price" context "Products list table header" as label %}
+              {% sorting_header 'price' label is_wide=True %}
+            </tr>
+          </thead>
+          <tbody>
+          {% for product in products %}
+            <tr class="avatar" data-action-go="{% url 'dashboard:package-offer-detail' pk=product.pk %}">
+              <td class="bulk-checkbox ignore-link">
+                <input id="id_products_{{ product.pk }}" type="checkbox" name="products" value="{{ product.pk }}" class="filled-in switch-actions select-item">
+                <label for="id_products_{{ product.pk }}"></label>
+              </td>
+              <td class="avatar">
+                <img src="{% product_first_image product size="60x60" method="crop" %}"
+                    srcset="{% product_first_image product size="60x60" method="crop" %} 1x, {% product_first_image product size="120x120" method="crop" %} 2x"
+                    alt="">
+              </td>
+              <td>
+                {{ product.name }}
+              </td>
+              <td>
+                {% gross product.price html=True %}
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+          </table>
+          </div>
+{#        </form>#}
+      </div>
+      {% paginate products %}
+    {% else %}
+      {% if is_empty %}
+        {% include 'dashboard/product/zero_page.html' %}
+      {% else %}
+        <div class="col s12">
+          <div class="not-found">
+            <p class="grey-text">
+              {% trans "No products found." context "Empty product list message" %}
+            </p>
+          </div>
+        </div>
+      {% endif %}
+    {% endif %}
+    </div>
+    <div class="col s12 l3" id="filters">
+      {% if not is_empty %}{% filters filter_set %}{% endif %}
+    </div>
+  </div>
 {% endblock %}
+
