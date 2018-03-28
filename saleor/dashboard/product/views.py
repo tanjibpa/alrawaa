@@ -12,7 +12,7 @@ from django_prices.templatetags.prices_i18n import gross
 from ...core.utils import get_paginator_items
 from ...product.models import (
     AttributeChoiceValue, Product, ProductAttribute, ProductClass,
-    ProductImage, ProductVariant, Stock, StockLocation)
+    ProductImage, ProductVariant, Stock, StockLocation, PackageOffer)
 from ...product.utils import (
     get_availability, get_product_costs_data, get_variant_costs_data)
 from ..views import staff_member_required
@@ -182,6 +182,9 @@ def product_create(request, class_pk):
 
     if product_form.is_valid() and not variant_errors:
         product = product_form.save()
+        if product.package_offer:
+            p = PackageOffer(device=product)
+            p.save()
         if create_variant:
             variant.product = product
             variant_form.save()
