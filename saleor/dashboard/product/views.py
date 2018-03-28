@@ -269,6 +269,9 @@ def product_edit(request, pk):
             for p in _product:
                 p.banner_position = None
                 p.save()
+        if product.package_offer:
+            p = PackageOffer(device=product)
+            p.save()
 
         product = form.save()
         if edit_variant:
