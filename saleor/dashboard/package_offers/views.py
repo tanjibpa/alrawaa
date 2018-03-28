@@ -12,7 +12,7 @@ from django_prices.templatetags.prices_i18n import gross
 from ...core.utils import get_paginator_items
 from ...product.models import (
     AttributeChoiceValue, Product, ProductAttribute, ProductClass,
-    ProductImage, ProductVariant, Stock, StockLocation)
+    ProductImage, ProductVariant, Stock, StockLocation, PackageOffer)
 from ...product.utils import (
     get_availability, get_product_costs_data, get_variant_costs_data)
 from ..views import staff_member_required
@@ -24,8 +24,8 @@ from . import forms
 @staff_member_required
 @permission_required('product.view_properties')
 def package_offers_list(request):
-    products = Product.objects.prefetch_related('images')
-    products = products.order_by('name').filter(package_offer=True)
+    products = PackageOffer.objects.all()
+    # products = products.order_by('name')
     product_classes = ProductClass.objects.all()
     product_filter = ProductFilter(request.GET, queryset=products)
     products = get_paginator_items(
@@ -44,33 +44,11 @@ def package_offers_list(request):
 @staff_member_required
 @permission_required('product.view_product')
 def package_offer_detail(request, pk):
-    products = Product.objects.prefetch_related(
-        'variants__stock', 'images',
-        'product_class__variant_attributes__values').all()
-    product = get_object_or_404(products, pk=pk)
-    variants = product.variants.all()
-    images = product.images.all()
-    availability = get_availability(product)
-    sale_price = availability.price_range
-    purchase_cost, gross_margin = get_product_costs_data(product)
-    gross_price_range = product.get_gross_price_range()
-
-    # no_variants is True for product classes that doesn't require variant.
-    # In this case we're using the first variant under the hood to allow stock
-    # management.
-    no_variants = not product.product_class.has_variants
-    only_variant = variants.first() if no_variants else None
-    if only_variant:
-        stock = only_variant.stock.all()
-    else:
-        stock = Stock.objects.none()
+    product = get_object_or_404(
+        PackageOffer, pk=pk)
     ctx = {
-        'product': product, 'sale_price': sale_price, 'variants': variants,
-        'gross_price_range': gross_price_range, 'images': images,
-        'no_variants': no_variants, 'only_variant': only_variant,
-        'stock': stock, 'purchase_cost': purchase_cost,
-        'gross_margin': gross_margin,
-        'is_empty': not variants.exists()}
+        'product': product
+    }
     return TemplateResponse(request, 'dashboard/package_offers/detail.html', ctx)
 
 
@@ -78,17 +56,40 @@ def package_offer_detail(request, pk):
 @permission_required('product.edit_product')
 def package_offer_edit(request, pk):
     product = get_object_or_404(
-        Product.objects.prefetch_related('variants'), pk=pk)
-
-    form = forms.PackageOfferForm(request.POST or None, instance=product)
-
+        PackageOffer, pk=pk)
+    form = forms.PackageOfferForm2(request.POST or None,
+                                   initial={'device': product.device.name,
+                                            'price': product.price[0] if product.price else 0})
     if form.is_valid():
-
-        product = form.save()
+        coil_id = form.cleaned_data['coils']
+        battery_id = form.cleaned_data['batteries']
+        price = form.cleaned_data['price']
+        product.coil = Product.objects.get(id=coil_id)
+        product.battery = Product.objects.get(id=battery_id)
+        product.price = price
+        product.save()
         msg = pgettext_lazy(
             'Dashboard message', 'Updated product %s') % product
         messages.success(request, msg)
-        return redirect('dashboard:product-detail', pk=product.pk)
+        return redirect('dashboard:package-offer-detail', pk=product.pk)
     ctx = {'product': product, 'product_form': form}
     return TemplateResponse(request, 'dashboard/package_offers/form.html', ctx)
 
+
+@staff_member_required
+@permission_required('product.edit_product')
+def package_offer_delete(request, pk):
+    product = get_object_or_404(PackageOffer, pk=pk)
+    if request.method == 'POST':
+        p = Product.objects.get(id=product.device.id)
+        p.package_offer = False
+        p.save()
+        product.delete()
+        messages.success(
+            request,
+            pgettext_lazy('Dashboard message', 'Removed package offer %s') % product)
+        return redirect('dashboard:package-offers-list')
+    return TemplateResponse(
+        request,
+        'dashboard/product/modal/confirm_delete.html',
+        {'product': product})
