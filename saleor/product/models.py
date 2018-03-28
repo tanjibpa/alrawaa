@@ -229,6 +229,9 @@ class PackageOffer(models.Model):
     eliquids = models.ManyToManyField(Product, verbose_name='eliquids for package offer', related_name='eliquids')
     coil = models.ForeignKey(Product, null=True, verbose_name='coil for package offer', related_name='coil')
     battery = models.ForeignKey(Product, null=True, verbose_name='battery for package offer', related_name='battery')
+    price = PriceField(pgettext_lazy('Package offer field', 'price'),
+                       currency=settings.DEFAULT_CURRENCY, max_digits=12, decimal_places=2,
+                       blank=True, null=True)
 
 
 class ProductVariant(models.Model, Item):
