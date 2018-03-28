@@ -225,10 +225,10 @@ class Product(models.Model, ItemRange):
 
 
 class PackageOffer(models.Model):
-    device = models.OneToOneField(Product, verbose_name='device for package offer')
-    eliquids = models.ManyToManyField(Product, verbose_name='eliquids for package offer')
-    coil = models.OneToOneField(Product, verbose_name='coil for package offer')
-    battery = models.OneToOneField(Product, verbose_name='battery for package offer')
+    device = models.OneToOneField(Product, verbose_name='device for package offer', related_name='device')
+    eliquids = models.ManyToManyField(Product, verbose_name='eliquids for package offer', related_name='eliquids')
+    coil = models.ForeignKey(Product, null=True, verbose_name='coil for package offer', related_name='coil')
+    battery = models.ForeignKey(Product, null=True, verbose_name='battery for package offer', related_name='battery')
 
 
 class ProductVariant(models.Model, Item):
