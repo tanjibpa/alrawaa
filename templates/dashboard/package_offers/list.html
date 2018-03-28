@@ -4,7 +4,7 @@
 {% load materializecss %}
 {% load staticfiles %}
 {% load utils %}
-{% load product_first_image from product_images %}
+{#{% load product_first_image from product_images %}#}
 
 {% block title %}
   {% trans "Package offers" context "Dashboard package offers list" %} - {{ block.super }}
@@ -71,15 +71,15 @@
                 <label for="id_products_{{ product.pk }}"></label>
               </td>
               <td class="avatar">
-                <img src="{% product_first_image product size="60x60" method="crop" %}"
-                    srcset="{% product_first_image product size="60x60" method="crop" %} 1x, {% product_first_image product size="120x120" method="crop" %} 2x"
-                    alt="">
+{#                <img src="{% product_first_image product size="60x60" method="crop" %}"#}
+{#                    srcset="{% product_first_image product size="60x60" method="crop" %} 1x, {% product_first_image product size="120x120" method="crop" %} 2x"#}
+{#                    alt="">#}
               </td>
               <td>
-                {{ product.name }}
+                {{ product.device.name }}
               </td>
               <td>
-                {% gross product.price html=True %}
+{#                {% gross product.price html=True %}#}
               </td>
             </tr>
           {% endfor %}
