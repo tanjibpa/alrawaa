@@ -233,6 +233,9 @@ class PackageOffer(models.Model):
                        currency=settings.DEFAULT_CURRENCY, max_digits=12, decimal_places=2,
                        blank=True, null=True)
 
+    def __str__(self):
+        return self.device.name
+
 
 class ProductVariant(models.Model, Item):
     sku = models.CharField(
