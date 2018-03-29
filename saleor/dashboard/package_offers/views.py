@@ -91,5 +91,5 @@ def package_offer_delete(request, pk):
         return redirect('dashboard:package-offers-list')
     return TemplateResponse(
         request,
-        'dashboard/product/modal/confirm_delete.html',
+        'dashboard/package_offers/confirm_delete.html',
         {'product': product})
