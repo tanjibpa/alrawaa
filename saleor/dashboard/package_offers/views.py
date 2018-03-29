@@ -93,3 +93,79 @@ def package_offer_delete(request, pk):
         request,
         'dashboard/package_offers/confirm_delete.html',
         {'product': product})
+
+
+@staff_member_required
+@permission_required('product.view_product')
+def package_offer_images(request, product_pk):
+    product = get_object_or_404(
+        PackageOffer.objects.prefetch_related('images'), pk=product_pk)
+    images = product.images.all()
+    ctx = {
+        'product': product, 'images': images, 'is_empty': not images.exists()}
+    return TemplateResponse(
+        request, 'dashboard/package_offers/product_image/list.html', ctx)
+
+
+@staff_member_required
+@permission_required('product.edit_product')
+def package_offer_image_edit(request, product_pk, img_pk=None):
+    product = get_object_or_404(PackageOffer, pk=product_pk)
+    if img_pk:
+        product_image = get_object_or_404(product.images, pk=img_pk)
+    else:
+        product_image = ProductImage(product=product)
+    form = forms.ProductImageForm(
+        request.POST or None, request.FILES or None, instance=product_image)
+    if form.is_valid():
+        product_image = form.save()
+        if img_pk:
+            msg = pgettext_lazy(
+                'Dashboard message',
+                'Updated image %s') % product_image.image.name
+        else:
+            msg = pgettext_lazy(
+                'Dashboard message',
+                'Added image %s') % product_image.image.name
+        messages.success(request, msg)
+        return redirect('dashboard:package-offer-image-list', product_pk=product.pk)
+    ctx = {'form': form, 'product': product, 'product_image': product_image}
+    return TemplateResponse(
+        request,
+        'dashboard/package_offers/product_image/form.html',
+        ctx)
+
+
+@staff_member_required
+@permission_required('product.edit_product')
+def package_offer_image_delete(request, product_pk, img_pk):
+    product = get_object_or_404(PackageOffer, pk=product_pk)
+    image = get_object_or_404(product.images, pk=img_pk)
+    if request.method == 'POST':
+        image.delete()
+        messages.success(
+            request,
+            pgettext_lazy(
+                'Dashboard message',
+                'Removed image %s') % image.image.name)
+        return redirect('dashboard:package-offer-image-list', product_pk=product.pk)
+    return TemplateResponse(
+        request,
+        'dashboard/package_offers/product_image/confirm_delete.html',
+        {'product': product, 'image': image})
+
+
+@require_POST
+@staff_member_required
+def ajax_upload_package_offer_image(request, product_pk):
+    product = get_object_or_404(PackageOffer, pk=product_pk)
+    form = forms.UploadImageForm(
+        request.POST or None, request.FILES or None, product=product)
+    status = 200
+    if form.is_valid():
+        image = form.save()
+        ctx = {'id': image.pk, 'image': None, 'order': image.order}
+    elif form.errors:
+        status = 400
+        ctx = {'error': form.errors}
+    return JsonResponse(ctx, status=status)

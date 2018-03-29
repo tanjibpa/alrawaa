@@ -25,18 +25,18 @@
 {% block breadcrumbs %}
   <ul class="breadcrumbs breadcrumbs--history">
     <li>
-      <a href="{% url "dashboard:product-list" %}" class="breadcrumb">
+      <a href="{% url "dashboard:package-offers-list" %}" class="breadcrumb">
         {% trans "Products" context "Dashboard products list" %}
       </a>
     </li>
     <li class="back-mobile">
-      <a href="{% url "dashboard:product-list" %}">
+      <a href="{% url "dashboard:package-offers-list" %}">
         <svg data-src="{% static "dashboard/images/arrow_left.svg" %}" fill="#fff" width="20px" height="20px" />
       </a>
     </li>
     <li>
         {% if product.pk %}
-        <a href="{% url "dashboard:product-detail" pk=product.pk %}" class="breadcrumbs--ellipsed-item">
+        <a href="{% url "dashboard:package-offer-detail" pk=product.pk %}" class="breadcrumbs--ellipsed-item">
           {{ product }}
         </a>
         {% else %}
@@ -91,14 +91,14 @@
           </div>
           <div class="card-action right-align">
             {% if product.pk %}
-              <a href="{% url 'dashboard:product-detail' product.pk %}" class="btn-flat waves-effect">
+              <a href="{% url 'dashboard:package-offer-detail' product.pk %}" class="btn-flat waves-effect">
                 {% trans "Cancel" context "Dashboard cancel action" %}
               </a>
               <button type="submit" class="btn waves-effect">
                 {% trans "Save" context "Dashboard update action" %}
               </button>
             {% else %}
-              <a href="{% url 'dashboard:product-list' %}" class="btn-flat waves-effect">
+              <a href="{% url 'dashboard:package-offers-list' %}" class="btn-flat waves-effect">
                 {% trans "Cancel" context "Dashboard cancel action" %}
               </a>
               <button type="submit" class="btn waves-effect">

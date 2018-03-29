@@ -1,5 +1,6 @@
 from django import forms
-from ...product.models import (Product,ProductClass)
+from ...product.models import (Product,ProductClass, PackageOfferImage)
+from ..product.widgets import ImagePreviewWidget
 
 
 class PackageOfferForm2(forms.Form):
@@ -20,3 +21,30 @@ class PackageOfferForm2(forms.Form):
             choices=[(battery.id, battery.name) for battery in batteries]
         )
         self.fields['price'] = forms.DecimalField(label='Price', decimal_places=2)
+
+
+class UploadImageForm(forms.ModelForm):
+    class Meta:
+        model = PackageOfferImage
+        fields = ('image', )
+
+    def __init__(self, *args, **kwargs):
+        product = kwargs.pop('product')
+        super().__init__(*args, **kwargs)
+        self.instance.product = product
+
+
+class ProductImageForm(forms.ModelForm):
+    use_required_attribute = False
+    # variants = forms.ModelMultipleChoiceField(
+    #     queryset=ProductVariant.objects.none(),
+    #     widget=forms.CheckboxSelectMultiple, required=False)
+
+    class Meta:
+        model = PackageOfferImage
+        exclude = ('product', 'order')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.image:
+            self.fields['image'].widget = ImagePreviewWidget()
