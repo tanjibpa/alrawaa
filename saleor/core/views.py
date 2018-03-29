@@ -6,6 +6,7 @@ from impersonate.views import impersonate as orig_impersonate, stop_impersonate
 from ..dashboard.views import staff_member_required
 from ..product.utils import products_with_availability, products_for_homepage, products_for_homepage_banner
 from ..userprofile.models import User
+from ..product.models import PackageOffer, PackageOfferImage
 
 
 def home(request):
@@ -22,12 +23,15 @@ def home(request):
         banner_products[0:3], discounts=request.discounts, local_currency=request.currency)
     products_second_row = products_with_availability(
         banner_products[3:6], discounts=request.discounts, local_currency=request.currency)
+    package_offer_images = PackageOfferImage.objects.all()
+    print(package_offer_images)
     return TemplateResponse(
         request, 'home.html',
         {'products': products,
          'parent': None,
          'products_first_row': products_first_row,
-         'products_second_row': products_second_row})
+         'products_second_row': products_second_row,
+         'package_offer_images': package_offer_images})
 
 
 def package_offer(request):
