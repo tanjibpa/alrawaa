@@ -11,7 +11,9 @@ from ..cart.utils import set_cart_cookie
 from ..core.utils import get_paginator_items, serialize_decimal
 from ..core.utils.filters import get_now_sorted_by, get_sort_by_choices
 from .filters import ProductFilter, SORT_BY_FIELDS
-from .models import Category
+from .models import (
+    Category, PackageOffer, PackageOfferImage,
+    ProductClass, Product, ProductAttribute, ProductVariant)
 from .utils import (
     get_availability, get_product_attributes_data, get_product_images,
     get_variant_picker_data, handle_cart_form, product_json_ld,
@@ -134,3 +136,100 @@ def category_index(request, path, category_id):
     if category.name.lower() == "package offers":
         return TemplateResponse(request, 'package_offer/index.html', ctx)
     return TemplateResponse(request, 'category/index.html', ctx)
+
+
+def package_offer_details(request, slug, product_id, form=None):
+    """Product details page
+
+    The following variables are available to the template:
+
+    product:
+        The Product instance itself.
+
+    is_visible:
+        Whether the product is visible to regular users (for cases when an
+        admin is previewing a product before publishing).
+
+    form:
+        The add-to-cart form.
+
+    price_range:
+        The PriceRange for the product including all discounts.
+
+    undiscounted_price_range:
+        The PriceRange excluding all discounts.
+
+    discount:
+        Either a Price instance equal to the discount value or None if no
+        discount was available.
+
+    local_price_range:
+        The same PriceRange from price_range represented in user's local
+        currency. The value will be None if exchange rate is not available or
+        the local currency is the same as site's default currency.
+    """
+    package_offer = get_object_or_404(PackageOffer, id=product_id)
+    products = products_with_details(user=request.user)
+    product = package_offer.device
+    # size_attribute_id = ProductAttribute.objects.filter(name='Size')[0].id
+    # ejuice_id = ProductClass.objects.filter(name='Ejuice')[0].id
+    # ejuices = Product.objects.filter(product_class_id=ejuice_id)
+
+    variants = ProductVariant.objects.all()
+
+    ejuices_60 = []
+    ejuices_100 = []
+
+    # TODO: Do something to reduce the response time
+    for variant in variants:
+        variant_attributes = variant.get_size_attribute()
+        if variant_attributes.get('Size') == '60 ML' and variant_attributes.get('Nicotine Strength') == '3 MG':
+            ejuices_60.append(variant)
+        elif variant_attributes.get('Size') == '100 ML' and variant_attributes.get('Nicotine Strength') == '3 MG':
+            ejuices_100.append(variant)
+
+    # product = get_object_or_404(products, id=product_id)
+    # if product.get_slug() != slug:
+    #     return HttpResponsePermanentRedirect(product.get_absolute_url())
+    today = datetime.date.today()
+    is_visible = (product.available_on is None or product.available_on <= today)
+    if form is None:
+        form = handle_cart_form(request, product, create_cart=False)[0]
+    availability = get_availability(product, discounts=request.discounts,
+                                    local_currency=request.currency)
+    product_images = get_product_images(product)
+    coil_images = get_product_images(package_offer.coil)
+    battery_images = get_product_images(package_offer.battery)
+    variant_picker_data = get_variant_picker_data(
+        product, request.discounts, request.currency)
+    product_attributes = get_product_attributes_data(product)
+    show_variant_picker = all([v.attributes for v in product.variants.all()])
+    # json_ld_data = product_json_ld(product, availability, product_attributes)
+    print(form)
+    return TemplateResponse(
+        request, 'product/package_offer/details.html',
+        {'form': form,
+         'is_visible': is_visible,
+         'package_offer': package_offer,
+         'product': product,
+         'availability': availability,
+         'product_attributes': product_attributes,
+         'product_images': product_images,
+         'show_variant_picker': show_variant_picker,
+         'variant_picker_data': json.dumps(
+             variant_picker_data, default=serialize_decimal),
+         'coil_images': coil_images,
+         'battery_images': battery_images})
+    # return TemplateResponse(
+    #     request, 'product/details.html',
+    #     {'is_visible': is_visible,
+    #      'form': form,
+    #      'availability': availability,
+    #      'product': product,
+    #      'product_attributes': product_attributes,
+    #      'product_images': product_images,
+    #      'show_variant_picker': show_variant_picker,
+    #      'variant_picker_data': json.dumps(
+    #          variant_picker_data, default=serialize_decimal),
+    #      'json_ld_product_data': json.dumps(
+    #          json_ld_data, default=serialize_decimal)})
