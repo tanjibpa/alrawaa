@@ -19,7 +19,7 @@ from text_unidecode import unidecode
 from versatileimagefield.fields import PPOIField, VersatileImageField
 
 from ..discount.models import calculate_discounted_price
-from .utils import get_attributes_display_map
+from .utils import get_attributes_display_map, get_size_attribute_display_map
 
 
 class Category(MPTTModel):
@@ -236,6 +236,14 @@ class PackageOffer(models.Model):
     def __str__(self):
         return self.device.name
 
+    def get_absolute_url(self):
+        return reverse(
+            'product:package-offer-details',
+            kwargs={'slug': self.get_slug(), 'product_id': self.id})
+
+    def get_slug(self):
+        return slugify(smart_text(unidecode(self.device.name)))
+
 
 class ProductVariant(models.Model, Item):
     sku = models.CharField(
@@ -313,6 +321,19 @@ class ProductVariant(models.Model, Item):
                  for (key, value) in values.items()])
         else:
             return smart_text(self.sku)
+
+    def get_size_attribute(self, attributes=None):
+        if attributes is None:
+            attributes = self.product.product_class.variant_attributes.all()
+        values = get_size_attribute_display_map(self, attributes)
+        return values
+        # if values:
+        #     return ', '.join(
+        #         ['%s: %s' % (smart_text(attributes.get(id=int(key))),
+        #                      smart_text(value))
+        #          for (key, value) in values.items()])
+        # else:
+        #     return smart_text(self.sku)
 
     def display_product(self):
         return '%s (%s)' % (smart_text(self.product), smart_text(self))
