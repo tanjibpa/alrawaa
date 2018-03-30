@@ -10,7 +10,7 @@
           <div class="carousel-inner" role="listbox">
             {% for image in package_offer_images %}
               <div class="carousel-item{% if forloop.first %} active{% endif %}">
-                <a href="">
+                <a href="{{ image.product.get_absolute_url }}">
                   <img class="d-block img-fluid"
                        src="{% get_thumbnail image.image method="crop" size="1890x840" %}"
                        srcset="{% get_thumbnail image.image method="crop" size="1890x840" %} 1x, {% get_thumbnail image.image method="crop" size="1080x1080" %} 2x" alt="">
