@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
-export default class AttributeSelectionWidget extends Component {
+export default class PackageAttributeSelectionWidget extends Component {
 
   static propTypes = {
     attribute: PropTypes.object.isRequired,
@@ -13,22 +13,25 @@ export default class AttributeSelectionWidget extends Component {
   //   this.props.handleChange(attrPk.toString(), valuePk.toString());
   // }
 
-  handleChange = (event, attrPk) => {
-    this.props.handleChange(attrPk.toString(), event.target.value.toString());
+  handleChange = (event) => {
+    let selected = event['srcElement']['options']['selectedIndex'];
+    let label = event['srcElement']['options'][selected]['label'];
+    let var_id = event['srcElement']['options'][selected]['value'];
+    this.props.handleChange(var_id.toString(), label.toString());
   }
 
   render() {
     const { attribute, selected } = this.props;
-    // console.log(attribute);
+    console.log(attribute);
     return (
       <div className="variant-picker">
         <div className="form-group">
         <div className="variant-picker__label">{attribute.name}</div>
-        <select className="form-control" data-toggle="option" onChange={() => this.handleChange(event, attribute.pk)}>
-          {attribute.values.map((value, i) => {
-            const active = selected === value.pk.toString();
+        <select className="form-control" data-toggle="option" onChange={() => this.handleChange(event)}>
+          {attribute.variants.map((value, i) => {
+            const active = selected === value.id.toString();
             return (
-              <option value={value.pk} selected={active}>
+              <option value={value.id} selected={active}>
                 {value.name}
               </option>
             );
