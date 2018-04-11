@@ -55,8 +55,8 @@ export default class VariantPickerPackageOffer extends Component {
     }
     const variantsEjuiuce60Selection = {};
     const variantsEjuiuce100Selection = {};
-    variantsEjuiuce60Selection[parseInt(variantsEjuice60.variants[0].id)] = variantsEjuice60.variants[0].name;
-    variantsEjuiuce100Selection[parseInt(variantsEjuice100.variants[0].id)] = variantsEjuice100.variants[0].name;
+    variantsEjuiuce60Selection[parseInt(variantsEjuice60.variants[0].id)] = {'name': variantsEjuice60.variants[0].name, 'url':variantsEjuice60.variants[0].url} ;
+    variantsEjuiuce100Selection[parseInt(variantsEjuice100.variants[0].id)] = {'name': variantsEjuice100.variants[0].name, 'url': variantsEjuice100.variants[0].url};
     this.state = {
       errors: {},
       quantity: 1,
@@ -65,8 +65,7 @@ export default class VariantPickerPackageOffer extends Component {
       ejuice100selection: variantsEjuiuce100Selection
     };
     this.matchVariantFromSelection();
-    console.log(variant[0].attributes);
-
+  console.log(this.props);
   }
 
   handleAddToCart = () => {
@@ -80,8 +79,8 @@ export default class VariantPickerPackageOffer extends Component {
           quantity: quantity,
           variant: store.variant.id,
           type: 'package',
-          ejuiceSixty: Object.keys(this.state.ejuice60selection)[0],
-          ejuiceHundred: Object.keys(this.state.ejuice100selection)[0],
+          // ejuiceSixty: Object.keys(this.state.ejuice60selection)[0],
+          // ejuiceHundred: Object.keys(this.state.ejuice100selection)[0],
           package_offer_id: this.props.packageOfferID,
         },
         success: () => {
