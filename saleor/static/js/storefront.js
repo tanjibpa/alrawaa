@@ -5,6 +5,7 @@ import './components/mobile/search';
 import './components/cart';
 import './components/sorter';
 import './components/variant-picker';
+import './components/variant-picker-package-offer';
 import './components/footer';
 import './components/product-filters';
 import './components/product-schema';
