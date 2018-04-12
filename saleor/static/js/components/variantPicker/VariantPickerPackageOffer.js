@@ -65,7 +65,7 @@ export default class VariantPickerPackageOffer extends Component {
       ejuice100selection: variantsEjuiuce100Selection
     };
     this.matchVariantFromSelection();
-  console.log(this.props);
+  // console.log(this.state.ejuice60selection);
   }
 
   handleAddToCart = () => {
@@ -74,6 +74,26 @@ export default class VariantPickerPackageOffer extends Component {
     if (quantity > 0 && !store.isEmpty) {
       $.ajax({
         url: this.props.url,
+        method: 'post',
+        data: {
+          quantity: quantity,
+          variant: store.variant.id,
+          type: 'package',
+          // ejuiceSixty: Object.keys(this.state.ejuice60selection)[0],
+          // ejuiceHundred: Object.keys(this.state.ejuice100selection)[0],
+          package_offer_id: this.props.packageOfferID,
+        },
+        success: () => {
+          onAddToCartSuccess();
+        },
+        error: (response) => {
+          onAddToCartError(response);
+        }
+      });
+
+      let ejuice60Url = Object.keys(this.state.ejuice60selection)
+      $.ajax({
+        url: this.state.ejuice60selection,
         method: 'post',
         data: {
           quantity: quantity,
@@ -110,14 +130,14 @@ export default class VariantPickerPackageOffer extends Component {
     });
   }
 
-  handleAttributeChangeEjuice60 = (attrId, valueId) => {
+  handleAttributeChangeEjuice60 = (attrId, valueId, url) => {
     this.setState(
-      {ejuice60selection: {[attrId]: valueId}});
+      {ejuice60selection: {[attrId]: {'name': valueId, 'url': url}}});
   }
 
-  handleAttributeChangeEjuice100 = (attrId, valueId) => {
+  handleAttributeChangeEjuice100 = (attrId, valueId, url) => {
      this.setState(
-      {ejuice100selection: {[attrId]: valueId}});
+      {ejuice100selection: {[attrId]: {'name': valueId, 'url': url}}});
   }
 
   handleQuantityChange = (event) => {
