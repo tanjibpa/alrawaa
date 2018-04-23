@@ -27,6 +27,10 @@ export default $(document).ready((e) => {
         variantsEjuice60={variantPickerDataEjuice60}
         variantsEjuice100={variantPickerDataEjuice100}
         packageOfferID={variantPickerContainer.dataset.packageOfferId}
+        coil={variantPickerContainer.dataset.coil}
+        coil_variant={variantPickerContainer.dataset.coilVariant}
+        battery={variantPickerContainer.dataset.battery}
+        battery_variant={variantPickerContainer.dataset.batteryVariant}
       />,
       variantPickerContainer
     );

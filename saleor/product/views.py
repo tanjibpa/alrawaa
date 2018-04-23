@@ -17,7 +17,8 @@ from .models import (
 from .utils import (
     get_availability, get_product_attributes_data, get_product_images,
     get_variant_picker_data, handle_cart_form, product_json_ld,
-    products_for_cart, products_with_availability, products_with_details)
+    products_for_cart, products_with_availability, products_with_details,
+    get_ejuice_variant_picker_data)
 
 
 def product_details(request, slug, product_id, form=None):
@@ -89,6 +90,47 @@ def product_add_to_cart(request, slug, product_id):
         return redirect(reverse(
             'product:details',
             kwargs={'product_id': product_id, 'slug': slug}))
+    # TODO: remove these
+    import pprint
+    pp = pprint.PrettyPrinter(indent=2)
+    pp.pprint(request.POST)
+
+    # products = products_for_cart(user=request.user)
+    # if b'type=package' in request.body:
+    #     params = request.POST
+    #     package_offer = PackageOffer.objects.filter(id=params['package_offer_id'])[0]
+    #     variants = ProductVariant.objects.all()
+    #     variant_device = get_object_or_404(variants, pk=params['variant'])
+    #     device = variant_device.product
+    #     print(device)
+    #     variant_ejuice60 = get_object_or_404(variants, pk=params['ejuiceSixty'])
+    #     ejuice60 = variant_ejuice60.product
+    #     print(ejuice60)
+    #     variant_ejuice100 = get_object_or_404(variants, pk=params['ejuiceHundred'])
+    #     ejuice100 = variant_ejuice100.product
+    #     print(ejuice100)
+    #     form1, cart = handle_cart_form(request, device, create_cart=True)
+    #     form2, cart = handle_cart_form(request, ejuice60)
+    #     form3, cart = handle_cart_form(request, ejuice100)
+    #     form4, cart = handle_cart_form(request, package_offer.coil)
+    #     form5, cart = handle_cart_form(request, package_offer.battery)
+    #     forms = [form1, form2, form3, form4, form5]
+    #     for form in forms:
+    #         if form.is_valid():
+    #             print('form!!')
+    #             form.save()
+    #             if request.is_ajax():
+    #                 response = JsonResponse({'next': reverse('cart:index')}, status=200)
+    #             else:
+    #                 response = redirect('cart:index')
+    #         else:
+    #             if request.is_ajax():
+    #                 response = JsonResponse({'error': form.errors}, status=400)
+    #             else:
+    #                 response = product_details(request, slug, device.id, form)
+    #
+    # else:
+    #     product = get_object_or_404(products, pk=product_id)
 
     products = products_for_cart(user=request.user)
     product = get_object_or_404(products, pk=product_id)
@@ -104,6 +146,7 @@ def product_add_to_cart(request, slug, product_id):
             response = JsonResponse({'error': form.errors}, status=400)
         else:
             response = product_details(request, slug, product_id, form)
+
     if not request.user.is_authenticated:
         set_cart_cookie(cart, response)
     return response
@@ -202,10 +245,16 @@ def package_offer_details(request, slug, product_id, form=None):
     battery_images = get_product_images(package_offer.battery)
     variant_picker_data = get_variant_picker_data(
         product, request.discounts, request.currency)
+    variant_picker_data.update({'product_type': 'package'})
+    # TODO: remove following
+    import pprint
+    pp = pprint.PrettyPrinter(indent=4)
+    # pp.pprint(variant_picker_data)
+    # pp.pprint(ejuices_60[0].product)
+    print(package_offer.coil.get_slug())
     product_attributes = get_product_attributes_data(product)
     show_variant_picker = all([v.attributes for v in product.variants.all()])
     # json_ld_data = product_json_ld(product, availability, product_attributes)
-    print(form)
     return TemplateResponse(
         request, 'product/package_offer/details.html',
         {'form': form,
@@ -219,7 +268,15 @@ def package_offer_details(request, slug, product_id, form=None):
          'variant_picker_data': json.dumps(
              variant_picker_data, default=serialize_decimal),
          'coil_images': coil_images,
-         'battery_images': battery_images})
+         'battery_images': battery_images,
+         'ejuice_60': json.dumps(
+             get_ejuice_variant_picker_data(ejuices_60), default=serialize_decimal),
+         'ejuice_100': json.dumps(
+             get_ejuice_variant_picker_data(ejuices_100), default=serialize_decimal),
+         'coil': package_offer.coil,
+         'coil_variant': package_offer.coil.variants.all()[0].id,
+         'battery': package_offer.battery,
+         'battery_variant': package_offer.battery.variants.all()[0].id})
     # return TemplateResponse(
     #     request, 'product/details.html',
     #     {'is_visible': is_visible,

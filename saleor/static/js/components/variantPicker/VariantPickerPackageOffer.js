@@ -91,6 +91,44 @@ export default class VariantPickerPackageOffer extends Component {
         }
       });
 
+      $.ajax({
+        url: this.props.coil,
+        method: 'post',
+        data: {
+          quantity: quantity,
+          variant: this.props.coil_variant,
+          type: 'package',
+          // ejuiceSixty: Object.keys(this.state.ejuice60selection)[0],
+          // ejuiceHundred: Object.keys(this.state.ejuice100selection)[0],
+          package_offer_id: this.props.packageOfferID,
+        },
+        success: () => {
+          onAddToCartSuccess();
+        },
+        error: (response) => {
+          onAddToCartError(response);
+        }
+      });
+
+      $.ajax({
+        url: this.props.battery,
+        method: 'post',
+        data: {
+          quantity: quantity,
+          variant: this.props.battery_variant,
+          type: 'package',
+          // ejuiceSixty: Object.keys(this.state.ejuice60selection)[0],
+          // ejuiceHundred: Object.keys(this.state.ejuice100selection)[0],
+          package_offer_id: this.props.packageOfferID,
+        },
+        success: () => {
+          onAddToCartSuccess();
+        },
+        error: (response) => {
+          onAddToCartError(response);
+        }
+      });
+
       let ejuice60VariantId = Object.keys(this.state.ejuice60selection)[0];
       let ejuice60Url = this.state.ejuice60selection[ejuice60VariantId]['url']+'add/';
       $.ajax({
