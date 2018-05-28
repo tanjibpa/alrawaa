@@ -1,5 +1,5 @@
 from django import forms
-from ...product.models import (Product,ProductClass, PackageOfferImage)
+from ...product.models import (Product, ProductClass, PackageOfferImage)
 from ..product.widgets import ImagePreviewWidget
 
 

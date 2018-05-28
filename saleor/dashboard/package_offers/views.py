@@ -55,23 +55,29 @@ def package_offer_detail(request, pk):
 @staff_member_required
 @permission_required('product.edit_product')
 def package_offer_edit(request, pk):
+    # TODO: check for coils, eliquids and batteries are in db
     product = get_object_or_404(
         PackageOffer, pk=pk)
+    if request.method == 'POST':
+        form = forms.PackageOfferForm2(request.POST or None,
+                                       initial={'device': product.device.name,
+                                                'price': product.price[0] if product.price else 0})
+        if form.is_valid():
+            coil_id = form.cleaned_data['coils']
+            battery_id = form.cleaned_data['batteries']
+            price = form.cleaned_data['price']
+            product.coil = Product.objects.get(id=coil_id)
+            product.battery = Product.objects.get(id=battery_id)
+            product.price = price
+            product.save()
+            msg = pgettext_lazy(
+                'Dashboard message', 'Updated product %s') % product
+            messages.success(request, msg)
+            return redirect('dashboard:package-offer-detail', pk=product.pk)
+
     form = forms.PackageOfferForm2(request.POST or None,
                                    initial={'device': product.device.name,
                                             'price': product.price[0] if product.price else 0})
-    if form.is_valid():
-        coil_id = form.cleaned_data['coils']
-        battery_id = form.cleaned_data['batteries']
-        price = form.cleaned_data['price']
-        product.coil = Product.objects.get(id=coil_id)
-        product.battery = Product.objects.get(id=battery_id)
-        product.price = price
-        product.save()
-        msg = pgettext_lazy(
-            'Dashboard message', 'Updated product %s') % product
-        messages.success(request, msg)
-        return redirect('dashboard:package-offer-detail', pk=product.pk)
     ctx = {'product': product, 'product_form': form}
     return TemplateResponse(request, 'dashboard/package_offers/form.html', ctx)
 
