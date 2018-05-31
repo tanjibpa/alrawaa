@@ -105,6 +105,7 @@ def get_availability(product, discounts=None, local_currency=None):
 
 
 def handle_cart_form(request, product, create_cart=False):
+    print(request.POST)
     if create_cart:
         cart = get_or_create_cart_from_request(request)
     else:
@@ -220,6 +221,45 @@ def get_variant_picker_data(product, discounts=None, local_currency=None):
     return data
 
 
+def get_ejuice_variant_picker_data(variants, discounts=None, local_currency=None):
+    data = {'variantAttributes': [], 'variants': []}
+
+    # Collect only available variants
+    filter_available_variants = defaultdict(list)
+
+    for variant in variants:
+        price = variant.get_price_per_item(discounts)
+        print(price)
+        price_undiscounted = variant.get_price_per_item()
+        if local_currency:
+            price_local_currency = to_local_currency(price, local_currency)
+        else:
+            price_local_currency = None
+
+        schema_data = {'@type': 'Offer',
+                       'itemCondition': 'http://schema.org/NewCondition',
+                       'priceCurrency': price.currency,
+                       'price': price.net}
+
+        if variant.is_in_stock():
+            schema_data['availability'] = 'http://schema.org/InStock'
+        else:
+            schema_data['availability'] = 'http://schema.org/OutOfStock'
+
+        variant_data = {
+            'id': variant.id,
+            'name': variant.product.name,
+            # 'price': price_as_dict_package_offer(price),
+            'schemaData': schema_data,
+            'url': variant.product.get_absolute_url()}
+        data['variants'].append(variant_data)
+
+        for variant_key, variant_value in variant.attributes.items():
+            filter_available_variants[int(variant_key)].append(
+                int(variant_value))
+    return data
+
+
 def get_product_attributes_data(product):
     attributes = product.product_class.product_attributes.all()
     attributes_map = {attribute.pk: attribute for attribute in attributes}
@@ -229,6 +269,16 @@ def get_product_attributes_data(product):
 
 
 def price_as_dict(price):
+    if not price:
+        return None
+    return {'currency': price.currency,
+            'gross': price.gross,
+            'grossLocalized': prices_i18n.gross(price),
+            'net': price.net,
+            'netLocalized': prices_i18n.net(price)}
+
+
+def price_as_dict_package_offer(price):
     if not price:
         return None
     return {'currency': price.currency,

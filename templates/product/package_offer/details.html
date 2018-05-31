@@ -132,7 +132,17 @@
         {% block orderform %}
           {% if show_variant_picker %}
             {% csrf_token %}
-            <div id="variant-picker" data-variant-picker-data="{{ variant_picker_data }}" data-action="{% url 'product:add-to-cart' product_id=product.pk slug=product.get_slug %}"></div>
+            <div id="variant-picker-package-offer"
+                 data-package-offer-id="{{ package_offer.id }}"
+                 data-variant-picker-data="{{ variant_picker_data }}"
+                 data-ejuice-sixty="{{ ejuice_60 }}"
+                 data-ejuice-hundred="{{ ejuice_100 }}"
+                 data-action="{% url 'product:add-to-cart' product_id=product.pk slug=product.get_slug %}"
+                 data-coil="{% url 'product:add-to-cart' product_id=coil.pk slug=coil.get_slug %}"
+                 data-coil-variant="{{ coil_variant }}"
+                 data-battery="{% url 'product:add-to-cart' product_id=battery.pk slug=battery.get_slug %}"
+                 data-battery-variant="{{ battery_variant }}">
+            </div>
           {% else %}
             <form id="product-form" role="form" class="product-form clearfix" method="post"
                   action="{% url 'product:add-to-cart' product_id=product.pk slug=product.get_slug %}" novalidate>
@@ -175,6 +185,109 @@
       </table>
     </div>
   </div>
+
+  {# EJUICE 60 #}
+  <div class="row product">
+    <div id="product-schema-component">
+      <script type="application/ld+json">{{ json_ld_product_data|safe }}</script>
+    </div>
+    <div class="col-md-6 col-12 product__gallery">
+      {% with images=product_images %}
+        {% if images %}
+          <div id="carousel-example-generic" class="carousel slide">
+            <div class="carousel-inner" role="listbox">
+              {% for image in images %}
+                <div class="carousel-item{% if forloop.first %} active{% endif %}">
+                  <img class="d-block img-fluid"
+                       src="{% get_thumbnail image.image method="crop" size="540x540" %}"
+                       srcset="{% get_thumbnail image.image method="crop" size="540x540" %} 1x, {% get_thumbnail image.image method="crop" size="1080x1080" %} 2x" alt="">
+                </div>
+              {% endfor %}
+            </div>
+            {% if images|length > 1 %}
+              <a class="carousel-control-prev" href="#carousel-example-generic" role="button" data-slide="prev">
+                <svg data-src="{% static "images/gallery_arrow.svg" %}" />
+              </a>
+              <a class="carousel-control-next" href="#carousel-example-generic" role="button" data-slide="next">
+                <svg data-src="{% static "images/gallery_arrow.svg" %}" />
+              </a>
+            {% endif %}
+{#            <ol class="carousel-indicators d-none d-md-block">#}
+{#              {% for image in images %}#}
+{#                {% if images|length > 1 %}#}
+{#                  <li data-target="#carousel-example-generic" data-slide-to="{{ forloop.counter0 }}"{% if forloop.first %} class="active"{% endif %}>#}
+{#                    <img src="{% get_thumbnail image.image method="crop" size="60x60" %}"#}
+{#                         srcset="{% get_thumbnail image.image method="crop" size="60x60" %} 1x, {% get_thumbnail image.image method="crop" size="120x120" %} 2x"#}
+{#                         alt="">#}
+{#                  </li>#}
+{#                {% endif %}#}
+{#              {% endfor %}#}
+{#            </ol>#}
+          </div>
+        {% else %}
+          <img src="{% static 'images/placeholder540x540.png' %}"
+               srcset="{% static 'images/placeholder540x540.png' %} 1x, {% static 'images/placeholder1080x1080.png' %} 2x"
+               alt=""
+               class="img-fluid">
+        {% endif %}
+      {% endwith %}
+    </div>
+    <div class="col-md-6 col-12 product__info">
+      <h1 class="product__info__name">
+        {{ product }}
+      </h1>
+      {% if user.is_staff %}
+        <p><a href="{% url "dashboard:package-offer-detail" pk=package_offer.id %}">
+            {% trans "Edit in dashboard" context "Product details link text" %}
+        </a></p>
+      {% endif %}
+      {% if availability.available %}
+        {% if show_variant_picker %}
+          <div id="variant-price-component"></div>
+        {% else %}
+          <h2 class="product__info__price">
+            <span>AED {{ package_offer.price.0 }}</span>
+{#            {% if availability.discount %}#}
+{#              <small class="product__info__price__undiscounted">{% gross availability.price_range_undiscounted.min_price html=True %}</small>#}
+{#            {% endif %}#}
+{#            {% if availability.price_range_local_currency %}#}
+{#              <br>#}
+{#              <small class="text-info">#}
+{#                &asymp;#}
+{#                {% gross availability.price_range_local_currency.min_price html=True %}#}
+{#              </small>#}
+{#            {% endif %}#}
+          </h2>
+        {% endif %}
+      {% endif %}
+      {% if is_visible %}
+        <div id="variant-picker-ejuice60" data-variant-picker-data="{{ ejuice_60 }}" data-action="{% url 'product:add-to-cart' product_id=product.pk slug=product.get_slug %}"></div>
+        <div class="product__info__form-error">
+          <small class="text-danger"></small>
+        </div>
+
+      {% else %}
+        <p class="alert alert-warning">
+          {% blocktrans context "Product details text" %}This product is currently <strong>unavailable</strong>.{% endblocktrans %}
+        </p>
+      {% endif %}
+      <div class="product__info__description">
+        <h3>{% trans "Description" context "Product details title" %}</h3>
+        <hr>
+        {{ product.description|markdown }}
+      </div>
+      <hr>
+      <table>
+        {% for attribute, value in product_attributes.items %}
+          <tr>
+            <td>{{ attribute }}:</td>
+            <td><strong>{{ value }}</strong></td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+
   {# COIL #}
   <div class="row product">
     <div class="col-md-6 col-12 product__gallery">
@@ -293,6 +406,7 @@
       </table>
     </div>
   </div>
+  {# BATTER #}
   <div class="row product">
     <div class="col-md-6 col-12 product__gallery">
       {% with images=battery_images %}
