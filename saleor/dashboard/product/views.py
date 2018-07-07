@@ -270,8 +270,12 @@ def product_edit(request, pk):
                 p.banner_position = None
                 p.save()
         if product.package_offer:
-            p = PackageOffer(device=product)
-            p.save()
+            # p = PackageOffer(device=product)
+            try:
+                p = PackageOffer.objects.get(device=product)
+            except PackageOffer.DoesNotExist:
+                p = PackageOffer(device=product)
+                p.save()
 
         product = form.save()
         if edit_variant:
