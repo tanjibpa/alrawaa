@@ -8,6 +8,7 @@ import AttributeSelectionWidget from './AttributeSelectionWidget';
 import PackageAttributeSelectionWidget from './PackageAttributeSelectionWidget';
 import QuantityInput from './QuantityInput';
 import * as queryString from 'query-string';
+import PackageOfferDevice from './PackageOfferDevice';
 
 @observer
 export default class VariantPickerPackageOffer extends Component {
@@ -277,6 +278,7 @@ export default class VariantPickerPackageOffer extends Component {
             </button>
           </div>
         </div>
+        <PackageOfferDevice />
       </div>
     );
   }

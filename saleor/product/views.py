@@ -247,11 +247,10 @@ def package_offer_details(request, slug, product_id, form=None):
         product, request.discounts, request.currency)
     variant_picker_data.update({'product_type': 'package'})
     # TODO: remove following
-    import pprint
-    pp = pprint.PrettyPrinter(indent=4)
+    # import pprint
+    # pp = pprint.PrettyPrinter(indent=4)
     # pp.pprint(variant_picker_data)
     # pp.pprint(ejuices_60[0].product)
-    print(package_offer.coil.get_slug())
     product_attributes = get_product_attributes_data(product)
     show_variant_picker = all([v.attributes for v in product.variants.all()])
     # json_ld_data = product_json_ld(product, availability, product_attributes)
