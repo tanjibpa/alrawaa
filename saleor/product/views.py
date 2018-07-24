@@ -13,7 +13,8 @@ from ..core.utils.filters import get_now_sorted_by, get_sort_by_choices
 from .filters import ProductFilter, SORT_BY_FIELDS
 from .models import (
     Category, PackageOffer, PackageOfferImage,
-    ProductClass, Product, ProductAttribute, ProductVariant)
+    ProductClass, Product, ProductAttribute, ProductVariant,
+    AttributeChoiceValue)
 from .utils import (
     get_availability, get_product_attributes_data, get_product_images,
     get_variant_picker_data, handle_cart_form, product_json_ld,
@@ -211,6 +212,15 @@ def package_offer_details(request, slug, product_id, form=None):
         currency. The value will be None if exchange rate is not available or
         the local currency is the same as site's default currency.
     """
+    # Attributes: Size and Nicotine Strength
+    size_attr = ProductAttribute.objects.get(name='Size').id
+    nicotine_strength_attr = ProductAttribute.objects.get(name='Nicotine Strength').id
+
+    # AttributeChoiceValue
+    sixty_ml_attr_choice = AttributeChoiceValue.objects.get(name='60 ML').id
+    hundred_ml_attr_choice = AttributeChoiceValue.objects.get(name='100 ML').id
+    three_mg_attr_choice = AttributeChoiceValue.objects.get(name='3 MG').id
+
     package_offer = get_object_or_404(PackageOffer, id=product_id)
     products = products_with_details(user=request.user)
     product = package_offer.device
@@ -218,18 +228,8 @@ def package_offer_details(request, slug, product_id, form=None):
     # ejuice_id = ProductClass.objects.filter(name='Ejuice')[0].id
     # ejuices = Product.objects.filter(product_class_id=ejuice_id)
 
-    variants = ProductVariant.objects.all()
-
-    ejuices_60 = []
-    ejuices_100 = []
-
-    # TODO: Do something to reduce the response time
-    for variant in variants:
-        variant_attributes = variant.get_size_attribute()
-        if variant_attributes.get('Size') == '60 ML' and variant_attributes.get('Nicotine Strength') == '3 MG':
-            ejuices_60.append(variant)
-        elif variant_attributes.get('Size') == '100 ML' and variant_attributes.get('Nicotine Strength') == '3 MG':
-            ejuices_100.append(variant)
+    ejuices_60 = list(ProductVariant.objects.filter(attributes__contains={size_attr: sixty_ml_attr_choice}).filter(attributes__contains={nicotine_strength_attr: three_mg_attr_choice}))
+    ejuices_100 = list(ProductVariant.objects.filter(attributes__contains={size_attr: hundred_ml_attr_choice}).filter(attributes__contains={nicotine_strength_attr: three_mg_attr_choice}))
 
     # product = get_object_or_404(products, id=product_id)
     # if product.get_slug() != slug:
