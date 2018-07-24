@@ -249,6 +249,8 @@ def get_ejuice_variant_picker_data(variants, discounts=None, local_currency=None
         variant_data = {
             'id': variant.id,
             'name': variant.product.name,
+            'dscription': variant.product.description,
+            # 'images': get_product_images(variant.product),
             # 'price': price_as_dict_package_offer(price),
             'schemaData': schema_data,
             'url': variant.product.get_absolute_url()}
