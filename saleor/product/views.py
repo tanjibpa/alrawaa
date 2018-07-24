@@ -229,8 +229,12 @@ def package_offer_details(request, slug, product_id, form=None):
     # ejuices = Product.objects.filter(product_class_id=ejuice_id)
 
     # TODO: Implement manager
-    ejuices_60 = list(ProductVariant.objects.filter(attributes__contains={size_attr: sixty_ml_attr_choice}).filter(attributes__contains={nicotine_strength_attr: three_mg_attr_choice}))
-    ejuices_100 = list(ProductVariant.objects.filter(attributes__contains={size_attr: hundred_ml_attr_choice}).filter(attributes__contains={nicotine_strength_attr: three_mg_attr_choice}))
+    ejuices_60 = list(ProductVariant.objects
+                      .filter(attributes__contains={size_attr: sixty_ml_attr_choice})
+                      .filter(attributes__contains={nicotine_strength_attr: three_mg_attr_choice}))
+    ejuices_100 = list(ProductVariant.objects
+                       .filter(attributes__contains={size_attr: hundred_ml_attr_choice})
+                       .filter(attributes__contains={nicotine_strength_attr: three_mg_attr_choice}))
 
     # product = get_object_or_404(products, id=product_id)
     # if product.get_slug() != slug:
