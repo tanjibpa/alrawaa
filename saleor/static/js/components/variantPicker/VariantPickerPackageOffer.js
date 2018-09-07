@@ -56,8 +56,8 @@ export default class VariantPickerPackageOffer extends Component {
     }
     const variantsEjuiuce60Selection = {};
     const variantsEjuiuce100Selection = {};
-    variantsEjuiuce60Selection[parseInt(variantsEjuice60.variants[0].id)] = {'name': variantsEjuice60.variants[0].name, 'url':variantsEjuice60.variants[0].url} ;
-    variantsEjuiuce100Selection[parseInt(variantsEjuice100.variants[0].id)] = {'name': variantsEjuice100.variants[0].name, 'url': variantsEjuice100.variants[0].url};
+    variantsEjuiuce60Selection[parseInt(variantsEjuice60.variants[0].id)] = {'name': variantsEjuice60.variants[0].name, 'url':variantsEjuice60.variants[0].url, 'description': variantsEjuice60.variants[0].description} ;
+    variantsEjuiuce100Selection[parseInt(variantsEjuice100.variants[0].id)] = {'name': variantsEjuice100.variants[0].name, 'url': variantsEjuice100.variants[0].url, 'description': variantsEjuice100.variants[0].description};
     this.state = {
       errors: {},
       quantity: 1,
@@ -191,14 +191,14 @@ export default class VariantPickerPackageOffer extends Component {
     });
   }
 
-  handleAttributeChangeEjuice60 = (attrId, valueId, url) => {
+  handleAttributeChangeEjuice60 = (attrId, valueId, url, description) => {
     this.setState(
-      {ejuice60selection: {[attrId]: {'name': valueId, 'url': url}}});
+      {ejuice60selection: {[attrId]: {'name': valueId, 'url': url, 'description': description}}});
   }
 
-  handleAttributeChangeEjuice100 = (attrId, valueId, url) => {
+  handleAttributeChangeEjuice100 = (attrId, valueId, url, description) => {
      this.setState(
-      {ejuice100selection: {[attrId]: {'name': valueId, 'url': url}}});
+      {ejuice100selection: {[attrId]: {'name': valueId, 'url': url, 'description': description}}});
   }
 
   handleQuantityChange = (event) => {

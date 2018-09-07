@@ -18,12 +18,12 @@ export default class PackageAttributeSelectionWidget extends Component {
     let label = event['srcElement']['options'][selected]['label'];
     let url = this.props.attribute['variants'][selected]['url'];
     let var_id = event['srcElement']['options'][selected]['value'];
-    this.props.handleChange(var_id.toString(), label.toString(), url.toString());
+    let description = this.props.attribute.variants[selected]['description'];
+    this.props.handleChange(var_id.toString(), label.toString(), url.toString(), description.toString());
   }
 
   render() {
     const { attribute, selected } = this.props;
-    console.log(attribute);
     return (
       <div className="variant-picker">
         <div className="form-group">
