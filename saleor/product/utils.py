@@ -12,6 +12,8 @@ from ..cart.utils import get_cart_from_request, get_or_create_cart_from_request
 from ..core.utils import to_local_currency
 from .forms import ProductForm
 
+from .templatetags.product_images import get_thumbnail
+
 
 def products_visible_to_user(user):
     from .models import Product
@@ -105,7 +107,6 @@ def get_availability(product, discounts=None, local_currency=None):
 
 
 def handle_cart_form(request, product, create_cart=False):
-    print(request.POST)
     if create_cart:
         cart = get_or_create_cart_from_request(request)
     else:
@@ -229,7 +230,6 @@ def get_ejuice_variant_picker_data(variants, discounts=None, local_currency=None
 
     for variant in variants:
         price = variant.get_price_per_item(discounts)
-        print(price)
         price_undiscounted = variant.get_price_per_item()
         if local_currency:
             price_local_currency = to_local_currency(price, local_currency)
@@ -246,14 +246,24 @@ def get_ejuice_variant_picker_data(variants, discounts=None, local_currency=None
         else:
             schema_data['availability'] = 'http://schema.org/OutOfStock'
 
+        # image of the product
+        image = variant.product.images.first().image
+
+        # Images of different size to render with react
+        variant_images = {
+            '1x': get_thumbnail(image, size="540x540"),
+            '2x': get_thumbnail(image, size="1080x1080")
+        }
+
         variant_data = {
             'id': variant.id,
             'name': variant.product.name,
-            'dscription': variant.product.description,
-            # 'images': get_product_images(variant.product),
+            'description': variant.product.description,
+            'images': variant_images,
             # 'price': price_as_dict_package_offer(price),
             'schemaData': schema_data,
             'url': variant.product.get_absolute_url()}
+
         data['variants'].append(variant_data)
 
         for variant_key, variant_value in variant.attributes.items():

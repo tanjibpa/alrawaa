@@ -19,7 +19,8 @@ export default class PackageAttributeSelectionWidget extends Component {
     let url = this.props.attribute['variants'][selected]['url'];
     let var_id = event['srcElement']['options'][selected]['value'];
     let description = this.props.attribute.variants[selected]['description'];
-    this.props.handleChange(var_id.toString(), label.toString(), url.toString(), description.toString());
+    let images = this.props.attribute.variants[selected]['images'];
+    this.props.handleChange(var_id.toString(), label.toString(), url.toString(), description.toString(), images);
   }
 
   render() {
