@@ -9,6 +9,8 @@ import PackageAttributeSelectionWidget from './PackageAttributeSelectionWidget';
 import QuantityInput from './QuantityInput';
 import * as queryString from 'query-string';
 import PackageOfferDevice from './PackageOfferDevice';
+import EjuiceDetails from '../ejuiceDetails/EjuiceDetails';
+import packageStore from './../../stores/variantPickerPackageOffer';
 
 @observer
 export default class VariantPickerPackageOffer extends Component {
@@ -68,6 +70,8 @@ export default class VariantPickerPackageOffer extends Component {
       'url': variantsEjuice100.variants[0].url,
       'description': variantsEjuice100.variants[0].description};
 
+    this.props.store.setEjuice60Details(variantsEjuiuce60Selection);
+    console.log(this.props.store.ejuice60details);
     this.state = {
       errors: {},
       quantity: 1,
@@ -204,6 +208,8 @@ export default class VariantPickerPackageOffer extends Component {
   handleAttributeChangeEjuice60 = (attrId, valueId, url, description, images) => {
     this.setState(
       {ejuice60selection: {[attrId]: {'name': valueId, 'url': url, 'description': description, 'images': images}}});
+      packageStore.setEjuice60Details({
+        [attrId]: {'name': valueId, 'url': url, 'description': description, 'images': images}});
   }
 
   handleAttributeChangeEjuice100 = (attrId, valueId, url, description, images) => {
@@ -252,7 +258,6 @@ export default class VariantPickerPackageOffer extends Component {
     const { store, variantAttributes, variantsEjuice60, variantsEjuice100 } = this.props;
     const { errors, selection, quantity, ejuice60selection, ejuice100selection } = this.state;
     const disableAddToCart = store.isEmpty;
-
     const addToCartBtnClasses = classNames({
       'btn primary': true,
       'disabled': disableAddToCart
@@ -289,6 +294,15 @@ export default class VariantPickerPackageOffer extends Component {
           </div>
         </div>
         <PackageOfferDevice />
+        {/*<EjuiceDetails*/}
+          {/*selected={ejuice60selection}*/}
+          {/*containerName="ejuice-60-details"*/}
+        {/*/>*/}
+
+        {/*<EjuiceDetails*/}
+          {/*selected={ejuice100selection}*/}
+          {/*containerName="ejuice-100-details"*/}
+        {/*/>*/}
       </div>
     );
   }

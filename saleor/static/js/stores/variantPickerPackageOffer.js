@@ -2,10 +2,18 @@ import { computed, observable } from 'mobx';
 
 class VariantPickerStorePackageOffer {
   @observable variant = {}
-  // @observable
+  @observable ejuice60Details = {};
 
   setVariant(variant) {
     this.variant = variant || {};
+  }
+
+  setEjuice60Details(details) {
+    this.ejuice60Details = details;
+  }
+
+  @computed get Ejuice60Details() {
+    return this.ejuice60Details;
   }
 
   @computed get isEmpty() {
@@ -13,5 +21,5 @@ class VariantPickerStorePackageOffer {
   }
 }
 
-const store = new VariantPickerStorePackageOffer();
-export default store;
+const packageStore = new VariantPickerStorePackageOffer();
+export default packageStore;

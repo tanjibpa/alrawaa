@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import VariantPicker from './variantPicker/VariantPicker';
 import VariantPickerPackageOffer from './variantPicker/VariantPickerPackageOffer';
 import VariantPrice from './variantPicker/VariantPrice';
-import variantPickerStore from '../stores/variantPickerPackageOffer';
+import store from '../stores/variantPickerPackageOffer';
 
 import {onAddToCartSuccess, onAddToCartError} from './cart';
 
@@ -20,7 +20,7 @@ export default $(document).ready((e) => {
       <VariantPickerPackageOffer
         onAddToCartError={onAddToCartError}
         onAddToCartSuccess={onAddToCartSuccess}
-        store={variantPickerStore}
+        store={store}
         url={variantPickerContainer.dataset.action}
         variantAttributes={variantPickerData.variantAttributes}
         variants={variantPickerData.variants}
