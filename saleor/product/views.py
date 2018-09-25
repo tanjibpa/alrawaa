@@ -181,7 +181,9 @@ def category_index(request, path, category_id):
         return TemplateResponse(request, 'package_offer/index.html', ctx)
     return TemplateResponse(request, 'category/index.html', ctx)
 
-
+"""
+Package offer: Package offer details page
+"""
 def package_offer_details(request, slug, product_id, form=None):
     """Product details page
 
@@ -245,12 +247,15 @@ def package_offer_details(request, slug, product_id, form=None):
         form = handle_cart_form(request, product, create_cart=False)[0]
     availability = get_availability(product, discounts=request.discounts,
                                     local_currency=request.currency)
+
     product_images = get_product_images(product)
     coil_images = get_product_images(package_offer.coil)
     battery_images = get_product_images(package_offer.battery)
+
     variant_picker_data = get_variant_picker_data(
         product, request.discounts, request.currency)
     variant_picker_data.update({'product_type': 'package'})
+
     # TODO: remove following
     # import pprint
     # pp = pprint.PrettyPrinter(indent=4)
@@ -259,8 +264,10 @@ def package_offer_details(request, slug, product_id, form=None):
     product_attributes = get_product_attributes_data(product)
     show_variant_picker = all([v.attributes for v in product.variants.all()])
     # json_ld_data = product_json_ld(product, availability, product_attributes)
+    # print(get_ejuice_variant_pina tcker_data(ejuices_60))
+    print(json.dumps(get_ejuice_variant_picker_data(ejuices_60), default=serialize_decimal))
     return TemplateResponse(
-        request, 'product/package_offer/details.html',
+        request, 'product/package_offer/details2.html',
         {'form': form,
          'is_visible': is_visible,
          'package_offer': package_offer,
