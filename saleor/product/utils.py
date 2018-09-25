@@ -251,8 +251,8 @@ def get_ejuice_variant_picker_data(variants, discounts=None, local_currency=None
 
         # Images of different size to render with react
         variant_images = {
-            '1x': get_thumbnail(image, size="540x540"),
-            '2x': get_thumbnail(image, size="1080x1080")
+            'one_x': get_thumbnail(image, size="540x540"),
+            'two_x': get_thumbnail(image, size="1080x1080")
         }
 
         variant_data = {
