@@ -15,8 +15,14 @@ export default class EjuiceDetails extends Component {
     // let selected_id = Object.keys(this.props.selected)[0];
     // let selected_ejuice = this.props.selected[selected_id];
     return (
-      <div>
-          <EjuiceImages store={this.props.store} />
+      <div className={"row"}>
+          <EjuiceImages
+            store={this.props.store}
+            ejuice_size={'ejuice60Details'}/>
+        <EjuiceImages
+            store={this.props.store}
+            ejuice_size={'ejuice100Details'}/>
+
       </div>
     );
   }
