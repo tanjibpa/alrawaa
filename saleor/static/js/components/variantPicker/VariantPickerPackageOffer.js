@@ -83,8 +83,6 @@ export default class VariantPickerPackageOffer extends Component {
       ejuice100selection: variantsEjuiuce100Selection
     };
     this.matchVariantFromSelection();
-
-    console.log(this.state.ejuice100selection);
   }
 
   handleAddToCart = () => {
@@ -300,15 +298,6 @@ export default class VariantPickerPackageOffer extends Component {
           </div>
         </div>
         <PackageOfferDevice />
-        {/*<EjuiceDetails*/}
-          {/*selected={ejuice60selection}*/}
-          {/*containerName="ejuice-60-details"*/}
-        {/*/>*/}
-
-        {/*<EjuiceDetails*/}
-          {/*selected={ejuice100selection}*/}
-          {/*containerName="ejuice-100-details"*/}
-        {/*/>*/}
       </div>
     );
   }
