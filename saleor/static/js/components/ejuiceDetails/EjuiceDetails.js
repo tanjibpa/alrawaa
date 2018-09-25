@@ -16,13 +16,13 @@ export default class EjuiceDetails extends Component {
     // let selected_ejuice = this.props.selected[selected_id];
     return (
       <div className={"row"}>
-          <EjuiceImages
-            store={this.props.store}
-            ejuice_size={'ejuice60Details'}/>
+        <div className={"col-md-2"}></div>
         <EjuiceImages
-            store={this.props.store}
-            ejuice_size={'ejuice100Details'}/>
-
+          store={this.props.store}
+          ejuice_size={'ejuice60Details'}/>
+        <EjuiceImages
+          store={this.props.store}
+          ejuice_size={'ejuice100Details'}/>
       </div>
     );
   }
