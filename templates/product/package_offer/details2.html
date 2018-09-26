@@ -169,183 +169,108 @@
           {% blocktrans context "Product details text" %}This product is currently <strong>unavailable</strong>.{% endblocktrans %}
         </p>
       {% endif %}
-      <div class="product__info__description">
-        <h3>{% trans "Description" context "Product details title" %}</h3>
-        <hr>
-        {{ product.description|markdown }}
-      </div>
-      <hr>
-      <table>
-        {% for attribute, value in product_attributes.items %}
-          <tr>
-            <td>{{ attribute }}:</td>
-            <td><strong>{{ value }}</strong></td>
-          </tr>
-        {% endfor %}
-      </table>
+{#      <div class="product__info__description">#}
+{#        <h3>{% trans "Description" context "Product details title" %}</h3>#}
+{#        <hr>#}
+{#        {{ product.description|markdown }}#}
+{#      </div>#}
+{#      <hr>#}
+{#      <table>#}
+{#        {% for attribute, value in product_attributes.items %}#}
+{#          <tr>#}
+{#            <td>{{ attribute }}:</td>#}
+{#            <td><strong>{{ value }}</strong></td>#}
+{#          </tr>#}
+{#        {% endfor %}#}
+{#      </table>#}
     </div>
   </div>
 
-{#   EJUICE 60#}
-  <div class="row product">
+  {# EJUICES #}
+  <div class="card-deck product">
     <div id="ejuice-details"></div>
 {#    <div id="ejuice-100-details"></div>#}
   </div>
-
-  <hr>
+  <br>
 
   {# COIL #}
-  <div class="row">
-  <div class="product">
-    <div class="col-md-6 col-12 product__gallery">
-      {% with images=coil_images %}
-        {% if images %}
-          <div id="carousel-example-generic-coil" class="carousel slide">
-            <div class="carousel-inner" role="listbox">
-              {% for image in images %}
-                <div class="carousel-item{% if forloop.first %} active{% endif %}">
-                  <img class="d-block img-fluid"
-                       src="{% get_thumbnail image.image method="crop" size="540x540" %}"
-                       srcset="{% get_thumbnail image.image method="crop" size="540x540" %} 1x, {% get_thumbnail image.image method="crop" size="1080x1080" %} 2x" alt="">
-                </div>
-              {% endfor %}
+  <div class="card-deck product">
+{#  <div className="col-md-6 col-12 product__gallery">#}
+    <div class="card mb-6 shadow-sm">
+          {% if coil_images %}
+              <img class="d-block img-fluid"
+                   src="{% get_thumbnail coil_images.image method="crop" size="540x540" %}"
+                   srcset="{% get_thumbnail coil_images.image method="crop" size="540x540" %} 1x, {% get_thumbnail coil_images.image method="crop" size="1080x1080" %} 2x" alt="">
+          {% endif %}
+          <div class="card-body">
+            <h2>{{ package_offer.coil }}</h2>
+
+            <div class="btn-group">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#coilModal">
+                Details
+              </button>
             </div>
-            {% if images|length > 1 %}
-              <a class="carousel-control-prev" href="#carousel-example-generic-coil" role="button" data-slide="prev">
-                <svg data-src="{% static "images/gallery_arrow.svg" %}" />
-              </a>
-              <a class="carousel-control-next" href="#carousel-example-generic-coil" role="button" data-slide="next">
-                <svg data-src="{% static "images/gallery_arrow.svg" %}" />
-              </a>
-            {% endif %}
+
+            <div class="modal fade" id="coilModal" tabIndex="-1" role="dialog"
+                 aria-labelledby="coilModalLongTitle" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="coilModalLongTitle">{{ package_offer.coil }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    {{ package_offer.coil.description|markdown }}
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
-        {% else %}
-          <img src="{% static 'images/placeholder540x540.png' %}"
-               srcset="{% static 'images/placeholder540x540.png' %} 1x, {% static 'images/placeholder1080x1080.png' %} 2x"
-               alt=""
-               class="img-fluid">
-        {% endif %}
-      {% endwith %}
-    </div>
-{#    <div class="col-md-6 col-12 product__info">#}
-{#      <h1 class="product__info__name">#}
-{#        {{ package_offer.coil }}#}
-{#      </h1>#}
-{#      {% if user.is_staff %}#}
-{#        <p><a href="{% url "dashboard:package-offer-detail" pk=package_offer.id %}">#}
-{#            {% trans "Edit in dashboard" context "Product details link text" %}#}
-{#        </a></p>#}
-{#      {% endif %}#}
-{#      {% if availability.available %}#}
-{#        {% if show_variant_picker %}#}
-{#          <div id="variant-price-component"></div>#}
-{#        {% else %}#}
-{#          <h2 class="product__info__price">#}
-{#            <span>AED {{ package_offer.price.0 }}</span>#}
-{#          </h2>#}
-{#        {% endif %}#}
-{#      {% endif %}#}
-{#      {% if is_visible %}#}
-{#        <div class="product__info__form-error">#}
-{#          <small class="text-danger"></small>#}
-{#        </div>#}
-{##}
-{#      {% else %}#}
-{#        <p class="alert alert-warning">#}
-{#          {% blocktrans context "Product details text" %}This product is currently <strong>unavailable</strong>.{% endblocktrans %}#}
-{#        </p>#}
-{#      {% endif %}#}
-{#      <div class="product__info__description">#}
-{#        <h3>{% trans "Description" context "Product details title" %}</h3>#}
-{#        <hr>#}
-{#        {{ package_offer.coil.description|markdown }}#}
-{#      </div>#}
-{#      <hr>#}
-{#      <table>#}
-{#        {% for attribute, value in product_attributes.items %}#}
-{#          <tr>#}
-{#            <td>{{ attribute }}:</td>#}
-{#            <td><strong>{{ value }}</strong></td>#}
-{#          </tr>#}
-{#        {% endfor %}#}
-{#      </table>#}
 {#    </div>#}
   </div>
   {# BATTERY #}
-  <div class="product">
-    <div class="col-md-4 product__gallery">
-      {% with images=battery_images %}
-        {% if images %}
-          <div id="carousel-example-generic-battery" class="carousel slide">
-            <div class="carousel-inner" role="listbox">
-              {% for image in images %}
-                <div class="carousel-item{% if forloop.first %} active{% endif %}">
-                  <img class="d-block img-fluid"
-                       src="{% get_thumbnail image.image method="crop" size="540x540" %}"
-                       srcset="{% get_thumbnail image.image method="crop" size="540x540" %} 1x, {% get_thumbnail image.image method="crop" size="1080x1080" %} 2x" alt="">
-                </div>
-              {% endfor %}
-            </div>
-            {% if images|length > 1 %}
-              <a class="carousel-control-prev" href="#carousel-example-generic-battery" role="button" data-slide="prev">
-                <svg data-src="{% static "images/gallery_arrow.svg" %}" />
-              </a>
-              <a class="carousel-control-next" href="#carousel-example-generic-battery" role="button" data-slide="next">
-                <svg data-src="{% static "images/gallery_arrow.svg" %}" />
-              </a>
-            {% endif %}
-          </div>
-        {% else %}
-          <img src="{% static 'images/placeholder540x540.png' %}"
-               srcset="{% static 'images/placeholder540x540.png' %} 1x, {% static 'images/placeholder1080x1080.png' %} 2x"
-               alt=""
-               class="img-fluid">
+    <div class="card mb-6 shadow-sm">
+        {% if battery_images %}
+          <img class="d-block img-fluid"
+               src="{% get_thumbnail battery_images.image method="crop" size="540x540" %}"
+               srcset="{% get_thumbnail battery_images.image method="crop" size="540x540" %} 1x, {% get_thumbnail battery_images.image method="crop" size="1080x1080" %} 2x" alt="">
         {% endif %}
-      {% endwith %}
+        <div class="card-body">
+          <h2>{{ package_offer.battery }}</h2>
+
+          <div class="btn-group">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#batteryModal">
+              Details
+            </button>
+          </div>
+
+          <div class="modal fade" id="batteryModal" tabIndex="-1" role="dialog"
+               aria-labelledby="batteryModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="batteryModalLongTitle">{{ package_offer.battery }}</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  {{ package_offer.battery.description|markdown }}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
     </div>
-{#    <div class="col-md-6 col-12 product__info">#}
-{#      <h1 class="product__info__name">#}
-{#        {{ package_offer.battery }}#}
-{#      </h1>#}
-{#      {% if user.is_staff %}#}
-{#        <p><a href="{% url "dashboard:package-offer-detail" pk=package_offer.id %}">#}
-{#            {% trans "Edit in dashboard" context "Product details link text" %}#}
-{#        </a></p>#}
-{#      {% endif %}#}
-{#      {% if availability.available %}#}
-{#        {% if show_variant_picker %}#}
-{#          <div id="variant-price-component"></div>#}
-{#        {% else %}#}
-{#          <h2 class="product__info__price">#}
-{#            <span>AED {{ package_offer.price.0 }}</span>#}
-{#          </h2>#}
-{#        {% endif %}#}
-{#      {% endif %}#}
-{#      {% if is_visible %}#}
-{#        <div class="product__info__form-error">#}
-{#          <small class="text-danger"></small>#}
-{#        </div>#}
-{##}
-{#      {% else %}#}
-{#        <p class="alert alert-warning">#}
-{#          {% blocktrans context "Product details text" %}This product is currently <strong>unavailable</strong>.{% endblocktrans %}#}
-{#        </p>#}
-{#      {% endif %}#}
-{#      <div class="product__info__description">#}
-{#        <h3>{% trans "Description" context "Product details title" %}</h3>#}
-{#        <hr>#}
-{#        {{ package_offer.battery.description|markdown }}#}
-{#      </div>#}
-{#      <hr>#}
-{#      <table>#}
-{#        {% for attribute, value in product_attributes.items %}#}
-{#          <tr>#}
-{#            <td>{{ attribute }}:</td>#}
-{#            <td><strong>{{ value }}</strong></td>#}
-{#          </tr>#}
-{#        {% endfor %}#}
-{#      </table>#}
-{#    </div>#}
-  </div>
   </div>
 {% endblock content %}
