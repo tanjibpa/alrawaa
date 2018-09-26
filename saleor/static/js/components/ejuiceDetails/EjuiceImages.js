@@ -33,8 +33,8 @@ export default class EjuiceImages extends Component {
     let images_srcset = images.one_x + ' 1x ,' + images.two_x + ' 2x';
     let data_target = "#" + this.props.ejuice_size;
     return (
-      <div className="col-md-4 col-12 product__gallery">
-        <div className="card mb-4 shadow-sm">
+      <div className="col-md-6 col-12 product__gallery">
+        <div className="card mb-6 shadow-sm">
           <Img className={'d-block img-fluid'} src={images.one_x} srcSet={images_srcset}/>
             <div className="card-body">
               <h2>{ selected_ejuice.name }</h2>
