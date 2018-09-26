@@ -278,8 +278,8 @@ def package_offer_details(request, slug, product_id, form=None):
          'show_variant_picker': show_variant_picker,
          'variant_picker_data': json.dumps(
              variant_picker_data, default=serialize_decimal),
-         'coil_images': coil_images,
-         'battery_images': battery_images,
+         'coil_images': coil_images[0],
+         'battery_images': battery_images[0],
          'ejuice_60': json.dumps(
              get_ejuice_variant_picker_data(ejuices_60), default=serialize_decimal),
          'ejuice_100': json.dumps(
