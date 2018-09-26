@@ -277,6 +277,7 @@ export default class VariantPickerPackageOffer extends Component {
             selected={selection[attribute.pk]}
           />
         )}
+        <p><u>Choose your ejuices</u></p>
         <PackageAttributeSelectionWidget
           attribute={variantsEjuice60}
           handleChange={this.handleAttributeChangeEjuice60}
@@ -297,7 +298,7 @@ export default class VariantPickerPackageOffer extends Component {
             </button>
           </div>
         </div>
-        <PackageOfferDevice />
+        {/*<PackageOfferDevice />*/}
       </div>
     );
   }
