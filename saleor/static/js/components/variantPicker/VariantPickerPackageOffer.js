@@ -86,8 +86,10 @@ export default class VariantPickerPackageOffer extends Component {
   }
 
   handleAddToCart = () => {
-    const { onAddToCartSuccess, onAddToCartError, store } = this.props;
-    const { quantity } = this.state;
+    const {onAddToCartSuccess, onAddToCartError, store} = this.props;
+    const {quantity} = this.state;
+    let ejuice60VariantId = Object.keys(this.state.ejuice60selection)[0];
+    let ejuice100VariantId = Object.keys(this.state.ejuice100selection)[0];
     if (quantity > 0 && !store.isEmpty) {
       $.ajax({
         url: this.props.url,
@@ -99,86 +101,10 @@ export default class VariantPickerPackageOffer extends Component {
           // ejuiceSixty: Object.keys(this.state.ejuice60selection)[0],
           // ejuiceHundred: Object.keys(this.state.ejuice100selection)[0],
           package_offer_id: this.props.packageOfferID,
-        },
-        success: () => {
-          onAddToCartSuccess();
-        },
-        error: (response) => {
-          onAddToCartError(response);
-        }
-      });
-
-      $.ajax({
-        url: this.props.coil,
-        method: 'post',
-        data: {
-          quantity: quantity,
-          variant: this.props.coil_variant,
-          type: 'package',
-          // ejuiceSixty: Object.keys(this.state.ejuice60selection)[0],
-          // ejuiceHundred: Object.keys(this.state.ejuice100selection)[0],
-          package_offer_id: this.props.packageOfferID,
-        },
-        success: () => {
-          onAddToCartSuccess();
-        },
-        error: (response) => {
-          onAddToCartError(response);
-        }
-      });
-
-      $.ajax({
-        url: this.props.battery,
-        method: 'post',
-        data: {
-          quantity: quantity,
-          variant: this.props.battery_variant,
-          type: 'package',
-          // ejuiceSixty: Object.keys(this.state.ejuice60selection)[0],
-          // ejuiceHundred: Object.keys(this.state.ejuice100selection)[0],
-          package_offer_id: this.props.packageOfferID,
-        },
-        success: () => {
-          onAddToCartSuccess();
-        },
-        error: (response) => {
-          onAddToCartError(response);
-        }
-      });
-
-      let ejuice60VariantId = Object.keys(this.state.ejuice60selection)[0];
-      let ejuice60Url = this.state.ejuice60selection[ejuice60VariantId]['url']+'add/';
-      $.ajax({
-        url: ejuice60Url,
-        method: 'post',
-        data: {
-          quantity: quantity,
-          variant: ejuice60VariantId,
-          type: 'package',
-          // ejuiceSixty: Object.keys(this.state.ejuice60selection)[0],
-          // ejuiceHundred: Object.keys(this.state.ejuice100selection)[0],
-          package_offer_id: this.props.packageOfferID,
-        },
-        success: () => {
-          onAddToCartSuccess();
-        },
-        error: (response) => {
-          onAddToCartError(response);
-        }
-      });
-
-      let ejuice100VariantId = Object.keys(this.state.ejuice100selection)[0];
-      let ejuice100Url = this.state.ejuice100selection[ejuice100VariantId]['url']+'add/';
-      $.ajax({
-        url: ejuice100Url,
-        method: 'post',
-        data: {
-          quantity: quantity,
-          variant: ejuice100VariantId,
-          type: 'package',
-          // ejuiceSixty: Object.keys(this.state.ejuice60selection)[0],
-          // ejuiceHundred: Object.keys(this.state.ejuice100selection)[0],
-          package_offer_id: this.props.packageOfferID,
+          coil_variant: this.props.coil_variant,
+          battery_variant: this.props.battery_variant,
+          ejuice60_variant: ejuice60VariantId,
+          ejucie100_variant: ejuice100VariantId,
         },
         success: () => {
           onAddToCartSuccess();
@@ -189,6 +115,88 @@ export default class VariantPickerPackageOffer extends Component {
       });
     }
   }
+
+      // $.ajax({
+      //   url: this.props.coil,
+      //   method: 'post',
+      //   data: {
+      //     quantity: quantity,
+      //     variant: this.props.coil_variant,
+      //     type: 'package',
+      //     // ejuiceSixty: Object.keys(this.state.ejuice60selection)[0],
+      //     // ejuiceHundred: Object.keys(this.state.ejuice100selection)[0],
+      //     package_offer_id: this.props.packageOfferID,
+      //   },
+      //   success: () => {
+      //     onAddToCartSuccess();
+      //   },
+      //   error: (response) => {
+      //     onAddToCartError(response);
+      //   }
+      // });
+
+      // $.ajax({
+      //   url: this.props.battery,
+      //   method: 'post',
+      //   data: {
+      //     quantity: quantity,
+      //     variant: this.props.battery_variant,
+      //     type: 'package',
+      //     // ejuiceSixty: Object.keys(this.state.ejuice60selection)[0],
+      //     // ejuiceHundred: Object.keys(this.state.ejuice100selection)[0],
+      //     package_offer_id: this.props.packageOfferID,
+      //   },
+      //   success: () => {
+      //     onAddToCartSuccess();
+      //   },
+      //   error: (response) => {
+      //     onAddToCartError(response);
+      //   }
+      // });
+
+      // let ejuice60VariantId = Object.keys(this.state.ejuice60selection)[0];
+      // let ejuice60Url = this.state.ejuice60selection[ejuice60VariantId]['url']+'add/';
+      // $.ajax({
+      //   url: ejuice60Url,
+      //   method: 'post',
+      //   data: {
+      //     quantity: quantity,
+      //     variant: ejuice60VariantId,
+      //     type: 'package',
+      //     // ejuiceSixty: Object.keys(this.state.ejuice60selection)[0],
+      //     // ejuiceHundred: Object.keys(this.state.ejuice100selection)[0],
+      //     package_offer_id: this.props.packageOfferID,
+      //   },
+      //   success: () => {
+      //     onAddToCartSuccess();
+      //   },
+      //   error: (response) => {
+      //     onAddToCartError(response);
+      //   }
+      // });
+
+      // let ejuice100VariantId = Object.keys(this.state.ejuice100selection)[0];
+      // let ejuice100Url = this.state.ejuice100selection[ejuice100VariantId]['url']+'add/';
+      // $.ajax({
+      //   url: ejuice100Url,
+      //   method: 'post',
+      //   data: {
+      //     quantity: quantity,
+      //     variant: ejuice100VariantId,
+      //     type: 'package',
+      //     // ejuiceSixty: Object.keys(this.state.ejuice60selection)[0],
+      //     // ejuiceHundred: Object.keys(this.state.ejuice100selection)[0],
+      //     package_offer_id: this.props.packageOfferID,
+      //   },
+      //   success: () => {
+      //     onAddToCartSuccess();
+      //   },
+      //   error: (response) => {
+      //     onAddToCartError(response);
+      //   }
+      // });
+  //   }
+  // }
 
   handleAttributeChange = (attrId, valueId) => {
     this.setState({
