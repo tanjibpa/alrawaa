@@ -12,6 +12,7 @@ from .forms import CountryForm, ReplaceCartLineForm
 from .models import Cart
 from .utils import (
     check_product_availability_and_warn, get_cart_data, get_or_empty_db_cart)
+from ..product.models import ProductVariant
 
 
 @get_or_empty_db_cart(cart_queryset=Cart.objects.for_display())
@@ -31,11 +32,29 @@ def index(request, cart):
         initial = {'quantity': line.get_quantity()}
         form = ReplaceCartLineForm(None, cart=cart, variant=line.variant,
                                    initial=initial, discounts=discounts)
-        cart_lines.append({
+
+        line_append = {
             'variant': line.variant,
             'get_price_per_item': line.get_price_per_item(discounts),
             'get_total': line.get_total(discounts=discounts),
-            'form': form})
+            'form': form}
+
+        if line.data and line.data.get('package_offer_id'):
+            coil_variant = ProductVariant.objects.get(id=line.data['coil_variant'])
+            battery_variant = ProductVariant.objects.get(id=line.data['battery_variant'])
+            ejuice60_variant = ProductVariant.objects.get(id=line.data['ejuice60_variant'])
+            ejuice100_variant = ProductVariant.objects.get(id=line.data['ejuice100_variant'])
+
+            line_append.update({
+                'type': 'package',
+                'package_offer_id': line.data.get('package_offer_id'),
+                'coil_variant': coil_variant.product,
+                'battery_variant': battery_variant.product,
+                'ejuice60_variant': ejuice60_variant.product,
+                'ejuice100_variant': ejuice100_variant.product
+            })
+
+        cart_lines.append(line_append)
 
     default_country = get_user_shipping_country(request)
     country_form = CountryForm(initial={'country': default_country})
