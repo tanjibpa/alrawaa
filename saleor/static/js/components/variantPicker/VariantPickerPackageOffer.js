@@ -104,7 +104,7 @@ export default class VariantPickerPackageOffer extends Component {
           coil_variant: this.props.coil_variant,
           battery_variant: this.props.battery_variant,
           ejuice60_variant: ejuice60VariantId,
-          ejucie100_variant: ejuice100VariantId,
+          ejuice100_variant: ejuice100VariantId,
         },
         success: () => {
           onAddToCartSuccess();
