@@ -20,6 +20,7 @@ from .utils import (
     get_variant_picker_data, handle_cart_form, product_json_ld,
     products_for_cart, products_with_availability, products_with_details,
     get_ejuice_variant_picker_data)
+from ..product.models import ProductVariant
 
 
 def product_details(request, slug, product_id, form=None):
@@ -133,9 +134,22 @@ def product_add_to_cart(request, slug, product_id):
     # else:
     #     product = get_object_or_404(products, pk=product_id)
 
+    package_offer = {}
+    if request.POST.get('type') == 'package':
+        coil_variant = ProductVariant.objects.get(id=request.POST.get('coil_variant'))
+        battery_variant = ProductVariant.objects.get(id=request.POST.get('battery_variant'))
+        ejuice60_variant = ProductVariant.objects.get(id=request.POST.get('ejuice60_variant'))
+        ejuice100_variant = ProductVariant.objects.get(id=request.POST.get('ejuice100_variant'))
+
+        package_offer.update({'package_offer_id': request.POST['package_offer_id'],
+                              'coil': coil_variant.as_data(),
+                              'battery': battery_variant.as_data(),
+                              'ejuice60': ejuice60_variant.as_data(),
+                              'ejuice100': ejuice100_variant.as_data()})
+
     products = products_for_cart(user=request.user)
     product = get_object_or_404(products, pk=product_id)
-    form, cart = handle_cart_form(request, product, create_cart=True)
+    form, cart = handle_cart_form(request, product, create_cart=True, package_offer=package_offer or None)
     if form.is_valid():
         form.save()
         if request.is_ajax():
