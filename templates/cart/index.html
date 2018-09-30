@@ -47,7 +47,7 @@
                    alt="">
                 {% if line.type == 'package' %}
                   <p>Package deal: {{ line.variant.product }}
-                  <br><small>{{ line.variant }}, {{ line.ejuice60_variant }}, {{ line.ejuice100_variant }}, {{ line.coil_variant }}, {{ line.battery_variant }}</small></p>
+                    <br><small>{{ line.variant }}, <b>Ejuices:</b> {{ line.ejuice60_variant }}, {{ line.ejuice100_variant }}</small></p>
                 {% else %}
                   <p>{{ line.variant.product }}
                   <br><small>{{ line.variant }}</small></p>
