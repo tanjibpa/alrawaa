@@ -37,8 +37,15 @@
               {% for item, item_price_per_item, item_price_total in shipment %}
                 <div class="row">
                   <div class="col-8">
+                    {% if item.data and item.data.package_offer_id %}
+                      <p><strong>Package Deal: {{ item.variant.product }}</strong> x {{ item.quantity }}<br>
+                      <span class="checkout__review__variant">{{ item.variant }}</span></p>
+                      <span class="checkout__review__variant">{{ item.data.ejuice60.product_name }}</span></p>
+                      <span class="checkout__review__variant">{{ item.data.ejuice100.product_name }}</span></p>
+                    {% else %}
                     <p><strong>{{ item.variant.product }}</strong> x {{ item.quantity }}<br>
                       <span class="checkout__review__variant">{{ item.variant }}</span></p>
+                    {% endif %}
                   </div>
                   <div class="col-4">
                     <p class="float-right">{% net item_price_total %}</p>
