@@ -6,7 +6,6 @@ from django.urls import reverse
 from django_babel.templatetags.babel import currencyfmt
 
 from ..core.utils import get_user_shipping_country, to_local_currency
-from ..product.models import ProductVariant
 from ..shipping.utils import get_shipment_options
 from .forms import CountryForm, ReplaceCartLineForm
 from .models import Cart
@@ -40,19 +39,24 @@ def index(request, cart):
             'form': form}
 
         if line.data and line.data.get('package_offer_id'):
-            coil_variant = ProductVariant.objects.get(id=line.data['coil_variant'])
-            battery_variant = ProductVariant.objects.get(id=line.data['battery_variant'])
-            ejuice60_variant = ProductVariant.objects.get(id=line.data['ejuice60_variant'])
-            ejuice100_variant = ProductVariant.objects.get(id=line.data['ejuice100_variant'])
+            # coil_variant = ProductVariant.objects.get(id=line.data['coil_variant'])
+            # battery_variant = ProductVariant.objects.get(id=line.data['battery_variant'])
+            # ejuice60_variant = ProductVariant.objects.get(id=line.data['ejuice60_variant'])
+            # ejuice100_variant = ProductVariant.objects.get(id=line.data['ejuice100_variant'])
+
+            # line.data['coil_variant'] = {'name': coil_variant.product.name, 'variant': coil_variant.id}
+            # line.save()
 
             line_append.update({
                 'type': 'package',
                 'package_offer_id': line.data.get('package_offer_id'),
-                'coil_variant': coil_variant.product,
-                'battery_variant': battery_variant.product,
-                'ejuice60_variant': ejuice60_variant.product,
-                'ejuice100_variant': ejuice100_variant.product
+                'coil_variant': line.data['coil']['product_name'],
+                'battery_variant': line.data['battery']['product_name'],
+                'ejuice60_variant': line.data['ejuice60']['product_name'],
+                'ejuice100_variant': line.data['ejuice100']['product_name']
             })
+
+            print(line_append)
 
         cart_lines.append(line_append)
 
