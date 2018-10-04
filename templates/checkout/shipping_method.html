@@ -11,6 +11,7 @@
     <form method="post" novalidate>
         {% csrf_token %}
         <h2>{% trans "Shipping method" context "Checkout shipping method form title" %}</h2>
+        <h3><b>Free, if you buy a package deal!</b></h3>
         {% bootstrap_form shipping_method_form show_label=False %}
         <p class="text-md-right">
             <button type="submit" class="btn primary">

@@ -93,9 +93,9 @@ def product_add_to_cart(request, slug, product_id):
             'product:details',
             kwargs={'product_id': product_id, 'slug': slug}))
     # TODO: remove these
-    import pprint
-    pp = pprint.PrettyPrinter(indent=2)
-    pp.pprint(request.POST)
+    # import pprint
+    # pp = pprint.PrettyPrinter(indent=2)
+    # pp.pprint(request.POST)
 
     # products = products_for_cart(user=request.user)
     # if b'type=package' in request.body:
@@ -144,8 +144,8 @@ def product_add_to_cart(request, slug, product_id):
         package_offer.update({'package_offer_id': request.POST['package_offer_id'],
                               'coil': coil_variant.as_data(),
                               'battery': battery_variant.as_data(),
-                              'ejuice60': ejuice60_variant.as_data(),
-                              'ejuice100': ejuice100_variant.as_data()})
+                              'ejuice60': [ejuice60_variant.as_data()],
+                              'ejuice100': [ejuice100_variant.as_data()]})
 
     products = products_for_cart(user=request.user)
     product = get_object_or_404(products, pk=product_id)

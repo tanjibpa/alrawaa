@@ -56,8 +56,6 @@ def index(request, cart):
                 'ejuice100_variant': line.data['ejuice100']['product_name']
             })
 
-            print(line_append)
-
         cart_lines.append(line_append)
 
     default_country = get_user_shipping_country(request)
