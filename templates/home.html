@@ -5,15 +5,16 @@
 
 
 {% block content %}
+  <div class="home">
       <div class="row">
         <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
           <div class="carousel-inner" role="listbox">
             {% for image in package_offer_images %}
               <div class="carousel-item{% if forloop.first %} active{% endif %}">
                 <a href="{{ image.product.get_absolute_url }}">
-                  <img class="d-block img-fluid"
+                  <img class="img-fluid"
                        src="{% get_thumbnail image.image method="crop" size="1890x840" %}"
-                       srcset="{% get_thumbnail image.image method="crop" size="1890x840" %} 1x, {% get_thumbnail image.image method="crop" size="1080x1080" %} 2x" alt="">
+                       srcset="{% get_thumbnail image.image method="crop" size="1890x840" %} 1x, {% get_thumbnail image.image method="crop" size="1080x480" %} 2x" alt="">
                 </a>
               </div>
             {% endfor %}
@@ -73,4 +74,5 @@
           {% include "category/_items.html" %}
         </div>
       </div>
+  </div>
 {% endblock %}
