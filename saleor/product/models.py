@@ -19,7 +19,7 @@ from text_unidecode import unidecode
 from versatileimagefield.fields import PPOIField, VersatileImageField
 
 from ..discount.models import calculate_discounted_price
-from .utils import get_attributes_display_map
+from .utils import get_attributes_display_map, get_size_attribute_display_map
 
 
 class Category(MPTTModel):
@@ -141,6 +141,8 @@ class Product(models.Model, ItemRange):
         pgettext_lazy('Product field', 'is bannered'), default=False)
     banner_position = models.IntegerField(
         pgettext_lazy('Product field', 'banner position'), choices=BANNER_POSITIONS, blank=True, null=True)
+    package_offer = models.BooleanField(
+        pgettext_lazy('Product field', 'package offer'), default=False)
 
     objects = ProductManager()
 
@@ -222,6 +224,27 @@ class Product(models.Model, ItemRange):
         return PriceRange(min(grosses), max(grosses))
 
 
+class PackageOffer(models.Model):
+    device = models.OneToOneField(Product, verbose_name='device for package offer', related_name='device')
+    eliquids = models.ManyToManyField(Product, verbose_name='eliquids for package offer', related_name='eliquids')
+    coil = models.ForeignKey(Product, null=True, verbose_name='coil for package offer', related_name='coil')
+    battery = models.ForeignKey(Product, null=True, verbose_name='battery for package offer', related_name='battery')
+    price = PriceField(pgettext_lazy('Package offer field', 'price'),
+                       currency=settings.DEFAULT_CURRENCY, max_digits=12, decimal_places=2,
+                       blank=True, null=True)
+
+    def __str__(self):
+        return self.device.name
+
+    def get_absolute_url(self):
+        return reverse(
+            'product:package-offer-details',
+            kwargs={'slug': self.get_slug(), 'product_id': self.id})
+
+    def get_slug(self):
+        return slugify(smart_text(unidecode(self.device.name)))
+
+
 class ProductVariant(models.Model, Item):
     sku = models.CharField(
         pgettext_lazy('Product variant field', 'SKU'), max_length=32,
@@ -298,6 +321,19 @@ class ProductVariant(models.Model, Item):
                  for (key, value) in values.items()])
         else:
             return smart_text(self.sku)
+
+    def get_size_attribute(self, attributes=None):
+        if attributes is None:
+            attributes = self.product.product_class.variant_attributes.all()
+        values = get_size_attribute_display_map(self, attributes)
+        return values
+        # if values:
+        #     return ', '.join(
+        #         ['%s: %s' % (smart_text(attributes.get(id=int(key))),
+        #                      smart_text(value))
+        #          for (key, value) in values.items()])
+        # else:
+        #     return smart_text(self.sku)
 
     def display_product(self):
         return '%s (%s)' % (smart_text(self.product), smart_text(self))
@@ -439,6 +475,44 @@ class ImageManager(models.Manager):
 class ProductImage(models.Model):
     product = models.ForeignKey(
         Product, related_name='images',
+        verbose_name=pgettext_lazy('Product image field', 'product'),
+        on_delete=models.CASCADE)
+    image = VersatileImageField(
+        upload_to='products', ppoi_field='ppoi', blank=False,
+        verbose_name=pgettext_lazy('Product image field', 'image'))
+    ppoi = PPOIField(verbose_name=pgettext_lazy('Product image field', 'ppoi'))
+    alt = models.CharField(
+        pgettext_lazy('Product image field', 'short description'),
+        max_length=128, blank=True)
+    order = models.PositiveIntegerField(
+        pgettext_lazy('Product image field', 'order'), editable=False)
+
+    objects = ImageManager()
+
+    class Meta:
+        ordering = ('order', )
+        app_label = 'product'
+
+    def get_ordering_queryset(self):
+        return self.product.images.all()
+
+    def save(self, *args, **kwargs):
+        if self.order is None:
+            qs = self.get_ordering_queryset()
+            existing_max = qs.aggregate(Max('order'))
+            existing_max = existing_max.get('order__max')
+            self.order = 0 if existing_max is None else existing_max + 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        qs = self.get_ordering_queryset()
+        qs.filter(order__gt=self.order).update(order=F('order') - 1)
+        super().delete(*args, **kwargs)
+
+
+class PackageOfferImage(models.Model):
+    product = models.ForeignKey(
+        PackageOffer, related_name='images',
         verbose_name=pgettext_lazy('Product image field', 'product'),
         on_delete=models.CASCADE)
     image = VersatileImageField(

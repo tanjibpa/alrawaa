@@ -99,14 +99,15 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         exclude = ['attributes', 'product_class']
-        labels = {
-            'is_published': pgettext_lazy('product form', 'Published'),
-            'is_featured': pgettext_lazy(
-                'product form', 'Feature this product on homepage'),
-            'is_bannered': pgettext_lazy(
-                'product form', 'Add this product in homepage banner'),
-            'banner_position': pgettext_lazy('product form', 'Choose banner position')
-        }
+    labels = {
+        'is_published': pgettext_lazy('product form', 'Published'),
+        'is_featured': pgettext_lazy(
+            'product form', 'Feature this product on homepage'),
+        'is_bannered': pgettext_lazy(
+            'product form', 'Add this product in homepage banner'),
+        'banner_position': pgettext_lazy('product form', 'Choose banner position'),
+        'package_offer': pgettext_lazy('product form', 'This is a package offer')
+    }
 
     def __init__(self, *args, **kwargs):
         self.product_attributes = []

@@ -4,8 +4,8 @@ from . import views
 
 
 urlpatterns = [
-    url(r'^$',
-        views.product_bannered_list, name='product-bannered-list'),
+    # url(r'^$',
+    #     views.product_bannered_list, name='product-bannered-list'),
     url(r'^$',
         views.product_list, name='product-list'),
     url(r'^(?P<pk>[0-9]+)/$',

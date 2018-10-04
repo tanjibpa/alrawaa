@@ -11,11 +11,14 @@ from ..product.models import Stock
 from ..userprofile.utils import store_user_address
 from .models import Order, OrderLine
 from . import GroupStatus
+from ..product.models import ProductVariant
+from ..discount.models import Voucher
 
 
 def check_order_status(func):
     """Preserves execution of function if order is fully paid by redirecting
     to order's details page."""
+
     @wraps(func)
     def decorator(*args, **kwargs):
         token = kwargs.pop('token')
@@ -64,10 +67,28 @@ def fill_group_with_partition(group, partition, discounts=None):
         add_variant_to_delivery_group(
             group, item.variant, item.get_quantity(), discounts,
             add_to_existing=False)
+        if item.data and item.data.get('package_offer_id'):
+            coil_variant = ProductVariant.objects.get(id=item.data['coil']['variant_id'])
+            battery_variant = ProductVariant.objects.get(id=item.data['battery']['variant_id'])
+            ejuice60_variant = ProductVariant.objects.get(id=item.data['ejuice60']['variant_id'])
+            ejuice100_variant = ProductVariant.objects.get(id=item.data['ejuice100']['variant_id'])
+
+            add_variant_to_delivery_group(
+                group, coil_variant, item.get_quantity(), discounts,
+                add_to_existing=True, package_offer=True)
+            add_variant_to_delivery_group(
+                group, battery_variant, item.get_quantity(), discounts,
+                add_to_existing=False, package_offer=True)
+            add_variant_to_delivery_group(
+                group, ejuice60_variant, item.get_quantity(), discounts,
+                add_to_existing=False, package_offer=True)
+            add_variant_to_delivery_group(
+                group, ejuice100_variant, item.get_quantity(), discounts,
+                add_to_existing=False, package_offer=True)
 
 
 def add_variant_to_delivery_group(
-        group, variant, total_quantity, discounts=None, add_to_existing=True):
+    group, variant, total_quantity, discounts=None, add_to_existing=True, package_offer=False):
     """Adds total_quantity of variant to group.
     Raises InsufficientStock exception if quantity could not be fulfilled.
 
@@ -81,6 +102,7 @@ def add_variant_to_delivery_group(
         add_variant_to_existing_lines(
             group, variant, total_quantity) if add_to_existing
         else total_quantity)
+    # if package_offer:
     price = variant.get_price_per_item(discounts)
     while quantity_left > 0:
         stock = variant.select_stockrecord()
@@ -91,13 +113,27 @@ def add_variant_to_delivery_group(
             if quantity_left > stock.quantity_available
             else quantity_left
         )
+
+        if package_offer:
+            unit_price_net = 0.00
+            unit_price_gross = 0.00
+        else:
+            unit_price_net = price.net
+            unit_price_gross = price.gross
+
+        print(variant.product)
+        print(type(price.net))
+        print(price.gross)
+        print(unit_price_net)
+        print(unit_price_gross)
+
         group.lines.create(
             product=variant.product,
-            product_name=variant.display_product(),
+            product_name=variant.display_product()[0:128],  # TODO: do something about it
             product_sku=variant.sku,
             quantity=quantity,
-            unit_price_net=price.net,
-            unit_price_gross=price.gross,
+            unit_price_net=unit_price_net,
+            unit_price_gross=unit_price_gross,
             stock=stock,
             stock_location=stock.location.name)
         Stock.objects.allocate_stock(stock, quantity)
@@ -119,7 +155,7 @@ def add_variant_to_existing_lines(group, variant, total_quantity):
     lines = group.lines.filter(
         product=variant.product, product_sku=variant.sku,
         stock__isnull=False).order_by(
-            F('stock__quantity_allocated') - F('stock__quantity'))
+        F('stock__quantity_allocated') - F('stock__quantity'))
 
     quantity_left = total_quantity
     for line in lines:

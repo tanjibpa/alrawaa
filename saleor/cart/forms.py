@@ -47,6 +47,7 @@ class AddToCartForm(forms.Form):
         self.cart = kwargs.pop('cart')
         self.product = kwargs.pop('product')
         self.discounts = kwargs.pop('discounts', ())
+        self.package_offer = kwargs.pop('package_offer', ())
         super().__init__(*args, **kwargs)
 
     def clean(self):
@@ -83,6 +84,11 @@ class AddToCartForm(forms.Form):
     def save(self):
         """Add the selected product variant and quantity to the cart."""
         product_variant = self.get_variant(self.cleaned_data)
+        if self.data.get('type') == 'package':
+            return self.cart.add(variant=product_variant,
+                                 quantity=self.cleaned_data['quantity'],
+                                 data=self.package_offer)
+
         return self.cart.add(variant=product_variant,
                              quantity=self.cleaned_data['quantity'])
 

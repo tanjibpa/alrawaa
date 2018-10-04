@@ -15,7 +15,7 @@
 
 {% block body_class %}body-products{% endblock %}
 
-{% block menu_products_class %}active{% endblock %}
+{% block menu_package_offers_class %}active{% endblock %}
 
 {% block header_menu %}
   {% url "dashboard:product-list" as url %}
@@ -25,18 +25,18 @@
 {% block breadcrumbs %}
   <ul class="breadcrumbs breadcrumbs--history">
     <li>
-      <a href="{% url "dashboard:product-list" %}" class="breadcrumb">
+      <a href="{% url "dashboard:package-offers-list" %}" class="breadcrumb">
         {% trans "Products" context "Dashboard products list" %}
       </a>
     </li>
     <li class="back-mobile">
-      <a href="{% url "dashboard:product-list" %}">
+      <a href="{% url "dashboard:package-offers-list" %}">
         <svg data-src="{% static "dashboard/images/arrow_left.svg" %}" fill="#fff" width="20px" height="20px" />
       </a>
     </li>
     <li>
         {% if product.pk %}
-        <a href="{% url "dashboard:product-detail" pk=product.pk %}" class="breadcrumbs--ellipsed-item">
+        <a href="{% url "dashboard:package-offer-detail" pk=product.pk %}" class="breadcrumbs--ellipsed-item">
           {{ product }}
         </a>
         {% else %}
@@ -65,65 +65,40 @@
           {% csrf_token %}
           <div class="card-content">
             <span class="card-title">
-              {{ product.product_class }}
+              Package Offer
             </span>
             <div class="row">
               <div class="col s12 l8" >
-                <div class="row">
-                  {{ product_form.name|materializecss }}
+                <div class="form-group">
+                  {{ product_form.device|materializecss }}
                 </div>
-                {% for attribute_field in product_form.iter_attribute_fields %}
-                  <div class="row">
-                    {{ attribute_field|materializecss:"input-field s12" }}
-                  </div>
-                {% endfor %}
-                <div class="row">
-                  {{ product_form.description|materializecss }}
+                <div class="form-group">
+                  {{ product_form.coils|materializecss }}
+                </div>
+                <div class="form-group">
+                  {{ product_form.batteries|materializecss }}
                 </div>
               </div>
               <div class="col s12 l4">
                 <div class="row">
+                  <div class="form-group">
                   {{ product_form.price|materializecss }}
-                </div>
-                {% if not product.product_class.has_variants %}
-                  <div class="row">
-                    {{ variant_form.sku|materializecss }}
                   </div>
-                {% endif %}
-                <div class="row">
-                  {{ product_form.categories|materializecss }}
-                </div>
-                <div class="row">
-                  {{ product_form.available_on|materializecss }}
-                </div>
-                <div class="row">
-                  {{ product_form.is_featured|materializecss }}
-                </div>
-                <div class="row">
-                  {{ product_form.is_published|materializecss }}
-                </div>
-                <div class="row">
-                  {{ product_form.is_bannered|materializecss }} {# {{ product_form.banner_position|materializecss:"input-field s4" }} #}
-                </div>
-                <div class="row">
-                  {{ product_form.banner_position|materializecss:"input-field s4" }}
-                </div>
-                <div class="row">
-                  {{ product_form.package_offer|materializecss }}
                 </div>
               </div>
+{#              </div>#}
             </div>
           </div>
           <div class="card-action right-align">
             {% if product.pk %}
-              <a href="{% url 'dashboard:product-detail' product.pk %}" class="btn-flat waves-effect">
+              <a href="{% url 'dashboard:package-offer-detail' product.pk %}" class="btn-flat waves-effect">
                 {% trans "Cancel" context "Dashboard cancel action" %}
               </a>
               <button type="submit" class="btn waves-effect">
                 {% trans "Save" context "Dashboard update action" %}
               </button>
             {% else %}
-              <a href="{% url 'dashboard:product-list' %}" class="btn-flat waves-effect">
+              <a href="{% url 'dashboard:package-offers-list' %}" class="btn-flat waves-effect">
                 {% trans "Cancel" context "Dashboard cancel action" %}
               </a>
               <button type="submit" class="btn waves-effect">

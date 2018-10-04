@@ -12,6 +12,8 @@ from ..cart.utils import get_cart_from_request, get_or_create_cart_from_request
 from ..core.utils import to_local_currency
 from .forms import ProductForm
 
+from .templatetags.product_images import get_thumbnail
+
 
 def products_visible_to_user(user):
     from .models import Product
@@ -104,14 +106,14 @@ def get_availability(product, discounts=None, local_currency=None):
         discount_local_currency=discount_local_currency)
 
 
-def handle_cart_form(request, product, create_cart=False):
+def handle_cart_form(request, product, create_cart=False, package_offer=None):
     if create_cart:
         cart = get_or_create_cart_from_request(request)
     else:
         cart = get_cart_from_request(request)
     form = ProductForm(
         cart=cart, product=product, data=request.POST or None,
-        discounts=request.discounts)
+        discounts=request.discounts, package_offer=package_offer)
     return form, cart
 
 
@@ -220,6 +222,56 @@ def get_variant_picker_data(product, discounts=None, local_currency=None):
     return data
 
 
+def get_ejuice_variant_picker_data(variants, discounts=None, local_currency=None):
+    data = {'variantAttributes': [], 'variants': []}
+
+    # Collect only available variants
+    filter_available_variants = defaultdict(list)
+
+    for variant in variants:
+        price = variant.get_price_per_item(discounts)
+        price_undiscounted = variant.get_price_per_item()
+        if local_currency:
+            price_local_currency = to_local_currency(price, local_currency)
+        else:
+            price_local_currency = None
+
+        schema_data = {'@type': 'Offer',
+                       'itemCondition': 'http://schema.org/NewCondition',
+                       'priceCurrency': price.currency,
+                       'price': price.net}
+
+        if variant.is_in_stock():
+            schema_data['availability'] = 'http://schema.org/InStock'
+        else:
+            schema_data['availability'] = 'http://schema.org/OutOfStock'
+
+        # image of the product
+        image = variant.product.images.first().image
+
+        # Images of different size to render with react
+        variant_images = {
+            'one_x': get_thumbnail(image, size="540x540"),
+            'two_x': get_thumbnail(image, size="1080x1080")
+        }
+
+        variant_data = {
+            'id': variant.id,
+            'name': variant.product.name,
+            'description': variant.product.description,
+            'images': variant_images,
+            # 'price': price_as_dict_package_offer(price),
+            'schemaData': schema_data,
+            'url': variant.product.get_absolute_url()}
+
+        data['variants'].append(variant_data)
+
+        for variant_key, variant_value in variant.attributes.items():
+            filter_available_variants[int(variant_key)].append(
+                int(variant_value))
+    return data
+
+
 def get_product_attributes_data(product):
     attributes = product.product_class.product_attributes.all()
     attributes_map = {attribute.pk: attribute for attribute in attributes}
@@ -229,6 +281,16 @@ def get_product_attributes_data(product):
 
 
 def price_as_dict(price):
+    if not price:
+        return None
+    return {'currency': price.currency,
+            'gross': price.gross,
+            'grossLocalized': prices_i18n.gross(price),
+            'net': price.net,
+            'netLocalized': prices_i18n.net(price)}
+
+
+def price_as_dict_package_offer(price):
     if not price:
         return None
     return {'currency': price.currency,
@@ -271,6 +333,19 @@ def get_attributes_display_map(obj, attributes):
                 display_map[attribute.pk] = choice_obj
             else:
                 display_map[attribute.pk] = value
+    return display_map
+
+def get_size_attribute_display_map(obj, attributes):
+    display_map = {}
+    for attribute in attributes:
+        value = obj.attributes.get(smart_text(attribute.pk))
+        if value:
+            choices = {smart_text(a.pk): a for a in attribute.values.all()}
+            choice_obj = choices.get(value)
+            if choice_obj:
+                display_map[attribute.name] = choice_obj.name
+            else:
+                display_map[attribute.name] = None
     return display_map
 
 

@@ -1,0 +1,360 @@
+{% extends "base.html" %}
+{% load bootstrap_pagination from bootstrap4 %}
+{% load i18n %}
+{% load shop %}
+{% load staticfiles %}
+{% load prices_i18n %}
+{% load build_absolute_uri from urls %}
+
+{% block footer_scripts %}
+  {{ block.super }}
+{% endblock footer_scripts %}
+
+{% block title %}{{ category }} — {{ block.super }}{% endblock %}
+
+{% block meta_tags %}
+    <meta property="og:title" content="{{ category }}">
+    <meta property="og:description" content="{{ category.description }}">
+    <meta property="og:image" content="{% static "images/block1.png" %}">
+
+    {% build_absolute_uri request=request location=category.get_absolute_url as category_url %}
+    <meta property="og:url" content="{{ category_url }}">
+    <link rel="canonical" href="{{ category_url }}?page={{ products_paginated.number }}">
+
+    {% if products_paginated.has_previous %}
+      <link rel="prev" href="{{ category_url }}?page={{ products_paginated.previous_page_number }}">
+    {% endif %}
+
+    {% if products_paginated.has_next %}
+      <link rel="next" href="{{ category_url }}?page={{ products_paginated.next_page_number }}">
+    {% endif %}
+{% endblock meta_tags %}
+
+{% block breadcrumb %}
+  {{ block.super }}
+  {% for breadcrumb in breadcrumbs %}
+    <li{% if forloop.last %} class="active"{% endif %}>
+      {% if not forloop.last %}
+        <a href="{{ breadcrumb.get_absolute_url }}">{{ breadcrumb }}</a>
+      {% else %}
+        <span>{{ breadcrumb }}</span>
+      {% endif %}
+    </li>
+  {% endfor %}
+{% endblock breadcrumb %}
+
+
+{% block content %}
+  {% if not is_visible %}
+    <div class="alert alert-warning" role="alert">
+      {% blocktrans trimmed with date=product.available_on|date context "Product details text" %}
+          <strong>Warning!</strong>
+          You are previewing a product that will become visible on <strong>{{ date }}</strong>.
+      {% endblocktrans %}
+    </div>
+  {% endif %}
+  <div class="row product">
+    <div id="product-schema-component">
+      <script type="application/ld+json">{{ json_ld_product_data|safe }}</script>
+    </div>
+    <div class="col-md-6 col-12 product__gallery">
+      {% with images=product_images %}
+        {% if images %}
+          <div id="carousel-example-generic" class="carousel slide">
+            <div class="carousel-inner" role="listbox">
+              {% for image in images %}
+                <div class="carousel-item{% if forloop.first %} active{% endif %}">
+                  <img class="d-block img-fluid"
+                       src="{% get_thumbnail image.image method="crop" size="540x540" %}"
+                       srcset="{% get_thumbnail image.image method="crop" size="540x540" %} 1x, {% get_thumbnail image.image method="crop" size="1080x1080" %} 2x" alt="">
+                </div>
+              {% endfor %}
+            </div>
+            {% if images|length > 1 %}
+              <a class="carousel-control-prev" href="#carousel-example-generic" role="button" data-slide="prev">
+                <svg data-src="{% static "images/gallery_arrow.svg" %}" />
+              </a>
+              <a class="carousel-control-next" href="#carousel-example-generic" role="button" data-slide="next">
+                <svg data-src="{% static "images/gallery_arrow.svg" %}" />
+              </a>
+            {% endif %}
+            <ol class="carousel-indicators d-none d-md-block">
+              {% for image in images %}
+                {% if images|length > 1 %}
+                  <li data-target="#carousel-example-generic" data-slide-to="{{ forloop.counter0 }}"{% if forloop.first %} class="active"{% endif %}>
+                    <img src="{% get_thumbnail image.image method="crop" size="60x60" %}"
+                         srcset="{% get_thumbnail image.image method="crop" size="60x60" %} 1x, {% get_thumbnail image.image method="crop" size="120x120" %} 2x"
+                         alt="">
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ol>
+          </div>
+        {% else %}
+          <img src="{% static 'images/placeholder540x540.png' %}"
+               srcset="{% static 'images/placeholder540x540.png' %} 1x, {% static 'images/placeholder1080x1080.png' %} 2x"
+               alt=""
+               class="img-fluid">
+        {% endif %}
+      {% endwith %}
+    </div>
+    <div class="col-md-6 col-12 product__info">
+      <h1 class="product__info__name">
+        {{ product }}
+      </h1>
+      {% if user.is_staff %}
+        <p><a href="{% url "dashboard:product-detail" pk=product.pk %}">
+            {% trans "Edit in dashboard" context "Product details link text" %}
+        </a></p>
+      {% endif %}
+      {% if availability.available %}
+        {% if show_variant_picker %}
+          <div id="variant-price-component"></div>
+        {% else %}
+          <h2 class="product__info__price">
+            <span>{% price_range availability.price_range %}</span>
+            {% if availability.discount %}
+              <small class="product__info__price__undiscounted">{% gross availability.price_range_undiscounted.min_price html=True %}</small>
+            {% endif %}
+            {% if availability.price_range_local_currency %}
+              <br>
+              <small class="text-info">
+                &asymp;
+                {% gross availability.price_range_local_currency.min_price html=True %}
+              </small>
+            {% endif %}
+          </h2>
+        {% endif %}
+      {% endif %}
+      {% if is_visible and product.is_in_stock %}
+        {% block orderform %}
+          {% if show_variant_picker %}
+            {% csrf_token %}
+            <div id="variant-picker" data-variant-picker-data="{{ variant_picker_data }}" data-action="{% url 'product:add-to-cart' product_id=product.pk slug=product.get_slug %}"></div>
+          {% else %}
+            <form id="product-form" role="form" class="product-form clearfix" method="post"
+                  action="{% url 'product:add-to-cart' product_id=product.pk slug=product.get_slug %}" novalidate>
+              {% csrf_token %}
+              {% bootstrap_field form.variant %}
+              <div class="product__info__quantity">
+                {% bootstrap_field form.quantity %}
+              </div>
+
+              <div class="form-group product__info__button">
+                <button class="btn primary">
+                  {% trans "Add to cart" context "Product details primary action" %}
+                </button>
+              </div>
+            </form>
+          {% endif %}
+        {% endblock %}
+        <div class="product__info__form-error">
+          <small class="text-danger"></small>
+        </div>
+
+      {% else %}
+        <p class="alert alert-warning">
+          {% blocktrans context "Product details text" %}This product is currently <strong>unavailable</strong>.{% endblocktrans %}
+        </p>
+      {% endif %}
+      <div class="product__info__description">
+        <h3>{% trans "Description" context "Product details title" %}</h3>
+        <hr>
+        {{ product.description|markdown }}
+      </div>
+      <hr>
+      <table>
+        {% for attribute, value in product_attributes.items %}
+          <tr>
+            <td>{{ attribute }}:</td>
+            <td><strong>{{ value }}</strong></td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+{% endblock content %}
+
+
+{#{% block content %}#}
+{#  <div id="category-page">#}
+{#    <div class="category-top">#}
+{#      <div class="row">#}
+{#        <div class="col-md-7">#}
+{#          <ul class="breadcrumbs list-unstyled d-none d-md-block">#}
+{#            <li><a href="{% url 'home' %}">{% trans "Home"  context 'Category breadcrumbs home' %}</a></li>#}
+{#            {% for ancestor in category.get_ancestors %}#}
+{#              <li><a href='{{ ancestor.get_absolute_url }}'>{{ ancestor.name }}</a></li>#}
+{#            {% endfor %}#}
+{#            <li><a href='{{ category.get_absolute_url }}'>{{ category.name }}</a></li>#}
+{#          </ul>#}
+{#        </div>#}
+{#        <div class="col-md-5 filters-menu__wrapper">#}
+{#          <div class="row">#}
+{#            <div class="col-6 col-md-2 col-lg-6 filters-menu">#}
+{#              <span class="filters-menu__label d-md-none">Filters</span>#}
+{#            </div>#}
+{#            <div class="col-6 col-md-10 col-lg-6">#}
+{#              <div class="sort-by">#}
+{#                <div class="click-area d-none"></div>#}
+{#                <button class="btn btn-link">#}
+{#                  <div>#}
+{#                    <span>#}
+{#                      {% if now_sorted_by == 'name' %}#}
+{#                        {% blocktrans trimmed %}#}
+{#                          Sort by: <b>name</b>#}
+{#                        {% endblocktrans %}#}
+{#                      {% elif now_sorted_by == 'price' %}#}
+{#                        {% blocktrans trimmed %}#}
+{#                          Sort by: <b>price</b>#}
+{#                        {% endblocktrans %}#}
+{#                      {% endif %}#}
+{#                    </span>#}
+{#                    <div class="sort-order-icon">#}
+{#                      {% if is_descending %}#}
+{#                        <svg data-src="{% static "images/arrow_down.svg" %}"/>#}
+{#                      {% else %}#}
+{#                        <svg data-src="{% static "images/arrow_up.svg" %}"/>#}
+{#                      {% endif %}#}
+{#                    </div>#}
+{#                  </div>#}
+{#                </button>#}
+{#                <ul class="sort-list d-none">#}
+{#                  {% for choice, label in sort_by_choices %}#}
+{#                    <li>#}
+{#                      <div class="row">#}
+{#                        <div class="col-6">#}
+{#                          {% trans 'Sort by' context 'Category page filters' %}: <strong>{{ label }}</strong>#}
+{#                        </div>#}
+{#                        <div class="col-6">#}
+{#                          <div>#}
+{#                            <a href="{% get_sort_by_url choice %}">#}
+{#                              <span>{% trans 'ascending' context 'sort by option' %}</span>#}
+{#                              <div class="sort-order-icon float-right">#}
+{#                                <img src="{% static "images/arrow_up.svg" %}">#}
+{#                              </div>#}
+{#                            </a>#}
+{#                            <a href="{% get_sort_by_url choice descending=True %}">#}
+{#                              <span>{% trans 'descending' context 'sort by option' %}</span>#}
+{#                              <div class="sort-order-icon float-right">#}
+{#                                <img src="{% static "images/arrow_down.svg" %}">#}
+{#                              </div>#}
+{#                            </a>#}
+{#                          </div>#}
+{#                        </div>#}
+{#                      </div>#}
+{#                    </li>#}
+{#                  {% endfor %}#}
+{#                </ul>#}
+{#              </div>#}
+{#            </div>#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#    <div class="row">#}
+{#      <div class="col-md-4 col-lg-3">#}
+{#        <div class="product-filters">#}
+{#          <div class="product-filters__categories">#}
+{#            <h2>#}
+{#              <strong>{{ category.name }}</strong>#}
+{#            </h2>#}
+{#            <ul class="product-filters__categories__childs no-parent">#}
+{#              {% for child in category.get_children %}#}
+{#                <li><a href="{{ child.get_absolute_url }}">{{ child.name }}</a></li>#}
+{#              {% endfor %}#}
+{#            </ul>#}
+{#          </div>#}
+{#        </div>#}
+{#        <div class="filters-menu__body d-none d-md-block">#}
+{#          <h2>#}
+{#            {% trans 'Filters' context 'Filter heading title' %}#}
+{#            {% if filter.is_bound_unsorted %}#}
+{#              <a href=".">#}
+{#                <span class="clear-filters float-right">{% trans 'Clear filters' context 'Category page filters' %}</span>#}
+{#              </a>#}
+{#            {% endif %}#}
+{#          </h2>#}
+{#          <div class="product-filters">#}
+{#            <div class="product-filters__attributes" data-icon-up="{% static "images/chevron_up.svg" %}"#}
+{#                 data-icon-down="{% static "images/chevron_down.svg" %}">#}
+{#              <form method="get">#}
+{#                {% for field in filter_set.form %}#}
+{#                  {% if field.name == 'sort_by' %}#}
+{#                    {% comment %}#}
+{#                      Field 'sort_by' is hidden because it is rendered in header.#}
+{#                      This is required if you want to have sorting to be kept during further filtering.#}
+{#                    {% endcomment %}#}
+{##}
+{#                    <input type="hidden" name="sort_by"#}
+{#                           value="{% if request.GET.sort_by %}{{ request.GET.sort_by }}{% endif %}">#}
+{#                  {% elif field.name == 'price' %}#}
+{#                    <div class="toggle-filter product-filters__price-range">#}
+{#                      <h3 class="filter-label">#}
+{#                        {{ field.label }}#}
+{#                        <div class="collapse-filters-icon">#}
+{#                          <img src="{% static "images/chevron_up.svg" %}">#}
+{#                        </div>#}
+{#                      </h3>#}
+{#                      <div class="filter-form-field" style="display:block">#}
+{#                        <div class="mb-3">#}
+{#                          <input id="{{ field.auto_id }}_0" name="{{ field.name }}_0"#}
+{#                                value="{% if field.value.0 %}{{ field.value.0 }}{% endif %}" type="number" min="0"#}
+{#                                class="form-control d-inline"#}
+{#                                placeholder="{% trans 'from' context 'Category price filter' %}"><span>-</span><input id="{{ field.auto_id }}_1" name="{{ field.name }}_1"#}
+{#                                value="{% if field.value.1 %}{{ field.value.1 }}{% endif %}" type="number" min="0"#}
+{#                                class="form-control d-inline" placeholder="{% trans 'to' context 'Category price filter' %}">#}
+{#                        </div>#}
+{#                      </div>#}
+{#                    </div>#}
+{#                  {% else %}#}
+{#                    <div class="toggle-filter">#}
+{#                      <h3 class="filter-label">#}
+{#                        {{ field.label }}#}
+{#                        <div class="collapse-filters-icon">#}
+{#                          <img src="{% static "images/chevron_up.svg" %}">#}
+{#                        </div>#}
+{#                      </h3>#}
+{#                      <div class="filter-form-field" style="display:block">#}
+{#                        {{ field }}#}
+{#                      </div>#}
+{#                    </div>#}
+{#                  {% endif %}#}
+{#                {% endfor %}#}
+{#                <div class="product-filters">#}
+{#                  <button class="btn primary" type="submit">{% trans 'Update' context 'Category price filter' %}</button>#}
+{#                </div>#}
+{#              </form>#}
+{#            </div>#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
+{#      <div class="col-md-8 col-lg-9 category-list">#}
+{#        <div>#}
+{#          <div>#}
+{#            {% if products %}#}
+{#              <div class="row">#}
+{#                  {% include "category/_items.html" with products=products %}#}
+{#              </div>#}
+{#              <div class="row">#}
+{#                <div class="m-auto">#}
+{#                  {% if products_paginated.has_other_pages %}#}
+{#                    {% bootstrap_pagination products_paginated extra=request.GET.urlencode %}#}
+{#                  {% endif %}#}
+{#                </div>#}
+{#              </div>#}
+{#            {% else %}#}
+{#              <div class="row no-results">#}
+{#                <div class="col-12">#}
+{#                  <svg data-src="{% static "images/pirate.svg" %}" width="360" height="360"/>#}
+{#                  <p>{% trans "Sorry, no matches found for your request." context "Search without results text" %}</p>#}
+{#                  <p>{% trans "Try again or shop new arrivals." context "Search without results text" %}</p>#}
+{#                </div>#}
+{#              </div>#}
+{#            {% endif %}#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+{#{% endblock content %}#}

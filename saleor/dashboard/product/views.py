@@ -12,7 +12,7 @@ from django_prices.templatetags.prices_i18n import gross
 from ...core.utils import get_paginator_items
 from ...product.models import (
     AttributeChoiceValue, Product, ProductAttribute, ProductClass,
-    ProductImage, ProductVariant, Stock, StockLocation)
+    ProductImage, ProductVariant, Stock, StockLocation, PackageOffer)
 from ...product.utils import (
     get_availability, get_product_costs_data, get_variant_costs_data)
 from ..views import staff_member_required
@@ -22,22 +22,22 @@ from .filters import (
 from . import forms
 
 
-@staff_member_required
-@permission_required('product.bannered_products')
-def product_bannered_list(request):
-    products = Product.objects.prefetch_related('images')
-    products = products.order_by('name')
-    product_classes = ProductClass.objects.all()
-    product_filter = ProductFilter(request.GET, queryset=products)
-    products = get_paginator_items(
-        product_filter.qs, settings.DASHBOARD_PAGINATE_BY,
-        request.GET.get('page'))
-    ctx = {
-        'bulk_action_form': forms.ProductBulkUpdate(),
-        'products': products, 'product_classes': product_classes,
-        'filter_set': product_filter,
-        'is_empty': not product_filter.queryset.exists()}
-    return TemplateResponse(request, 'dashboard/product/list.html', ctx)
+# @staff_member_required
+# @permission_required('product.bannered_products')
+# def product_bannered_list(request):
+#     products = Product.objects.prefetch_related('images')
+#     products = products.order_by('name')
+#     product_classes = ProductClass.objects.all()
+#     product_filter = ProductFilter(request.GET, queryset=products)
+#     products = get_paginator_items(
+#         product_filter.qs, settings.DASHBOARD_PAGINATE_BY,
+#         request.GET.get('page'))
+#     ctx = {
+#         'bulk_action_form': forms.ProductBulkUpdate(),
+#         'products': products, 'product_classes': product_classes,
+#         'filter_set': product_filter,
+#         'is_empty': not product_filter.queryset.exists()}
+#     return TemplateResponse(request, 'dashboard/product/list.html', ctx)
 
 
 @staff_member_required
@@ -182,6 +182,9 @@ def product_create(request, class_pk):
 
     if product_form.is_valid() and not variant_errors:
         product = product_form.save()
+        if product.package_offer:
+            p = PackageOffer(device=product)
+            p.save()
         if create_variant:
             variant.product = product
             variant_form.save()
@@ -265,6 +268,13 @@ def product_edit(request, pk):
             _product = Product.objects.filter(banner_position=product.banner_position)
             for p in _product:
                 p.banner_position = None
+                p.save()
+        if product.package_offer:
+            # p = PackageOffer(device=product)
+            try:
+                p = PackageOffer.objects.get(device=product)
+            except PackageOffer.DoesNotExist:
+                p = PackageOffer(device=product)
                 p.save()
 
         product = form.save()
