@@ -38,7 +38,7 @@ def index(request, cart):
             'get_total': line.get_total(discounts=discounts),
             'form': form}
 
-        if line.data and line.data.get('package_offer_id'):
+        if line.package_offer_data and line.package_offer_data.get('package_offer_id'):
             # coil_variant = ProductVariant.objects.get(id=line.data['coil_variant'])
             # battery_variant = ProductVariant.objects.get(id=line.data['battery_variant'])
             # ejuice60_variant = ProductVariant.objects.get(id=line.data['ejuice60_variant'])
@@ -49,12 +49,13 @@ def index(request, cart):
 
             line_append.update({
                 'type': 'package',
-                'package_offer_id': line.data.get('package_offer_id'),
-                'coil_variant': line.data['coil']['product_name'],
-                'battery_variant': line.data['battery']['product_name'],
-                'ejuice60_variant': line.data['ejuice60']['product_name'],
-                'ejuice100_variant': line.data['ejuice100']['product_name']
+                'package_offer_id': line.package_offer_data.get('package_offer_id'),
+                'coil_variant': line.package_offer_data['coil']['product_name'],
+                'battery_variant': line.package_offer_data['battery']['product_name'],
+                'ejuice60_variant': [ejuice60['product_name'] for ejuice60 in line.package_offer_data['ejuice60']],
+                'ejuice100_variant': [ejuice100['product_name'] for ejuice100 in line.package_offer_data['ejuice100']]
             })
+            print(line_append)
 
         cart_lines.append(line_append)
 

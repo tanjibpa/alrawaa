@@ -13,6 +13,7 @@ from django_prices.models import PriceField
 from jsonfield import JSONField
 from prices import Price
 from satchless.item import ItemLine, ItemList, partition
+from django.shortcuts import get_object_or_404
 
 from . import CartStatus, logger
 
@@ -203,7 +204,7 @@ class Cart(models.Model):
             return line[0]
 
     def add(self, variant, quantity=1, data=None, replace=False,
-            check_quantity=True):
+            check_quantity=True, package_offer_data=None):
         """Add a product vartiant to cart.
 
         The `data` parameter may be used to differentiate between items with
@@ -212,8 +213,23 @@ class Cart(models.Model):
         If `replace` is truthy then any previous quantity is discarded instead
         of added to.
         """
-        cart_line, dummy_created = self.lines.get_or_create(
-            variant=variant, defaults={'quantity': 0, 'data': data or {}})
+        if package_offer_data:
+            cart_line, dummy_created = self.lines.get_or_create(
+                variant=variant, defaults={'quantity': 0, 'data': data or {}})
+            if cart_line:
+                ejuice60 = cart_line.package_offer_data.get('ejuice60')
+                ejuice100 = cart_line.package_offer_data.get('ejuice100')
+                if ejuice60:
+                    ejuice60.append(package_offer_data['ejuice60'][0])
+                if ejuice100:
+                    ejuice100.append(package_offer_data['ejuice60'][0])
+                cart_line.save()
+                if ejuice60 is None and ejuice100 is None:
+                    cart_line, dummy_created = self.lines.update_or_create(
+                        variant=variant, defaults={'quantity': 0, 'data': data or {}, 'package_offer_data':package_offer_data})
+        else:
+            cart_line, dummy_created = self.lines.get_or_create(
+                variant=variant, defaults={'quantity': 0, 'data': data or {}})
         if replace:
             new_quantity = quantity
         else:
@@ -262,6 +278,8 @@ class CartLine(models.Model, ItemLine):
     data = JSONField(
         blank=True, default={},
         verbose_name=pgettext_lazy('Cart line field', 'data'))
+    package_offer_data = JSONField(blank=True, default={},
+        verbose_name=pgettext_lazy('Cart line package offer field', 'package_offer_data'))
 
     class Meta:
         unique_together = ('cart', 'variant', 'data')

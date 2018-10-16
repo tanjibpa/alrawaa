@@ -47,7 +47,16 @@
                    alt="">
                 {% if line.type == 'package' %}
                   <p>Package deal: {{ line.variant.product }}
-                    <br><small>{{ line.variant }}, <b>Ejuices:</b> {{ line.ejuice60_variant }}, {{ line.ejuice100_variant }}</small></p>
+                    <br><small>{{ line.variant }}
+
+                      {% for ejuice60 in line.ejuice60_variant  %}
+                        <b>60 ml Ejuice:</b> <b>{{ ejuice60 }}</b>
+                      {% endfor %}
+                      {% for ejuice100 in line.ejuice100_variant  %}
+                        <br>
+                        <b>100 ml Ejuice:</b> <b>{{ ejuice100 }}</b>
+                      {% endfor %}
+                    </small>
                 {% else %}
                   <p>{{ line.variant.product }}
                   <br><small>{{ line.variant }}</small></p>

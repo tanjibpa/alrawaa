@@ -87,7 +87,7 @@ class AddToCartForm(forms.Form):
         if self.data.get('type') == 'package':
             return self.cart.add(variant=product_variant,
                                  quantity=self.cleaned_data['quantity'],
-                                 data=self.package_offer)
+                                 package_offer_data=self.package_offer)
 
         return self.cart.add(variant=product_variant,
                              quantity=self.cleaned_data['quantity'])

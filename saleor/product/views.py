@@ -142,10 +142,10 @@ def product_add_to_cart(request, slug, product_id):
         ejuice100_variant = ProductVariant.objects.get(id=request.POST.get('ejuice100_variant'))
 
         package_offer.update({'package_offer_id': request.POST['package_offer_id'],
-                              'coil': coil_variant.as_data(),
-                              'battery': battery_variant.as_data(),
-                              'ejuice60': ejuice60_variant.as_data(),
-                              'ejuice100': ejuice100_variant.as_data()})
+                              'coil': coil_variant.as_package_data(),
+                              'battery': battery_variant.as_package_data(),
+                              'ejuice60': [ejuice60_variant.as_package_data()],
+                              'ejuice100': [ejuice100_variant.as_package_data()]})
 
     products = products_for_cart(user=request.user)
     product = get_object_or_404(products, pk=product_id)
