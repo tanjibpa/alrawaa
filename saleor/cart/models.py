@@ -105,13 +105,14 @@ class Cart(models.Model):
         verbose_name=pgettext_lazy('Cart field', 'token'))
     checkout_data = JSONField(
         verbose_name=pgettext_lazy('Cart field', 'checkout data'), null=True,
-        editable=False,)
+        editable=False, )
     total = PriceField(
         pgettext_lazy('Cart field', 'total'),
         currency=settings.DEFAULT_CURRENCY, max_digits=12, decimal_places=2,
         default=0)
     quantity = models.PositiveIntegerField(
         pgettext_lazy('Cart field', 'quantity'), default=0)
+    has_package_offer = models.BooleanField(default=False)
 
     objects = CartQueryset.as_manager()
 
@@ -216,17 +217,23 @@ class Cart(models.Model):
         if package_offer_data:
             cart_line, dummy_created = self.lines.get_or_create(
                 variant=variant, defaults={'quantity': 0, 'data': data or {}})
-            if cart_line:
-                ejuice60 = cart_line.package_offer_data.get('ejuice60')
-                ejuice100 = cart_line.package_offer_data.get('ejuice100')
-                if ejuice60:
-                    ejuice60.append(package_offer_data['ejuice60'][0])
-                if ejuice100:
-                    ejuice100.append(package_offer_data['ejuice60'][0])
+            if cart_line.package_offer_data:
+                p_data = package_offer_data.get('packages')[0]
+                # print(p_data)
+                print(cart_line.package_offer_data['packages'])
+                cart_line.package_offer_data.get('packages').append(p_data)
+                # ejuice60 = cart_line.package_offer_data.get('ejuice60')
+                # ejuice100 = cart_line.package_offer_data.get('ejuice100')
+                # if ejuice60:
+                #     ejuice60.append(package_offer_data['ejuice60'][0])
+                # if ejuice100:
+                #     ejuice100.append(package_offer_data['ejuice60'][0])
                 cart_line.save()
-                if ejuice60 is None and ejuice100 is None:
-                    cart_line, dummy_created = self.lines.update_or_create(
-                        variant=variant, defaults={'quantity': 0, 'data': data or {}, 'package_offer_data':package_offer_data})
+            else:
+                cart_line, dummy_created = self.lines.update_or_create(
+                    variant=variant, defaults={'quantity': 0,
+                                               'data': data or {},
+                                               'package_offer_data': package_offer_data})
         else:
             cart_line, dummy_created = self.lines.get_or_create(
                 variant=variant, defaults={'quantity': 0, 'data': data or {}})
@@ -279,7 +286,7 @@ class CartLine(models.Model, ItemLine):
         blank=True, default={},
         verbose_name=pgettext_lazy('Cart line field', 'data'))
     package_offer_data = JSONField(blank=True, default={},
-        verbose_name=pgettext_lazy('Cart line package offer field', 'package_offer_data'))
+                                   verbose_name=pgettext_lazy('Cart line package offer field', 'package_offer_data'))
 
     class Meta:
         unique_together = ('cart', 'variant', 'data')

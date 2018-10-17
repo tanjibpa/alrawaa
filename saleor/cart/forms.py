@@ -85,9 +85,12 @@ class AddToCartForm(forms.Form):
         """Add the selected product variant and quantity to the cart."""
         product_variant = self.get_variant(self.cleaned_data)
         if self.data.get('type') == 'package':
+            self.cart.has_package_offer = True
+            self.cart.save()
+            p = {'packages': [self.package_offer]}
             return self.cart.add(variant=product_variant,
                                  quantity=self.cleaned_data['quantity'],
-                                 package_offer_data=self.package_offer)
+                                 package_offer_data=p)
 
         return self.cart.add(variant=product_variant,
                              quantity=self.cleaned_data['quantity'])

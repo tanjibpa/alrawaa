@@ -49,6 +49,7 @@ class Checkout:
         self.discounts = cart.discounts
         self._shipping_method = None
         self._shipping_address = None
+        self.has_package_offer = False
 
     @classmethod
     def from_storage(cls, storage_data, cart, user, tracking_code):
@@ -106,13 +107,20 @@ class Checkout:
         price and the line total.
         """
         for partition in self.cart.partition():
+            is_package_offer = False
+            for p in partition:
+                if p.package_offer_data:
+                    is_package_offer = True
+                    break
+
             if self.shipping_method and partition.is_shipping_required():
                 shipping_cost = self.shipping_method.get_total()
             else:
                 shipping_cost = Price(0, currency=settings.DEFAULT_CURRENCY)
+            if is_package_offer:
+                shipping_cost = Price(0, currency=settings.DEFAULT_CURRENCY)
             total_with_shipping = partition.get_total(
                 discounts=self.cart.discounts) + shipping_cost
-
             partition = [
                 (item,
                  item.get_price_per_item(discounts=self.cart.discounts),
