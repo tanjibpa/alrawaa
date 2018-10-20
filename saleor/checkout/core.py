@@ -335,8 +335,6 @@ class Checkout:
             order_data['discount_amount'] = discount.amount
             order_data['discount_name'] = discount.name
 
-        print(order_data)
-
         order = Order.objects.create(**order_data)
 
         for partition in self.cart.partition():
