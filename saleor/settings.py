@@ -432,3 +432,6 @@ IMPERSONATE = {
     'USE_HTTP_REFERER': True,
     'CUSTOM_ALLOW': 'saleor.userprofile.impersonate.can_impersonate'
 }
+
+STAFF_MAIL1 = 'sales1.alrawaavape@gmail.com'
+STAFF_MAIL2 = 'sales2.alrawaavape@gmail.com'

@@ -59,10 +59,13 @@ def send_simple_message(address, url, template, order=None):
 @shared_task
 def send_order_confirmation(address, url, order=None):
     # _send_confirmation(address, url, CONFIRM_ORDER_TEMPLATE)
-    send_simple_message(address, url, CONFIRM_ORDER_TEMPLATE)
     if order:
         send_simple_message(address, url, ORDER_DETAILS_TEMPLATE, order=order)
-        send_simple_message(address, url, ORDER_DETAILS_TEMPLATE_STAFF, order=order)
+        # Fixme: send mails to the staffs
+        send_simple_message(settings.STAFF_MAIL1, url, ORDER_DETAILS_TEMPLATE_STAFF, order=order)
+        send_simple_message(settings.STAFF_MAIL2, url, ORDER_DETAILS_TEMPLATE_STAFF, order=order)
+    else:
+        send_simple_message(address, url, CONFIRM_ORDER_TEMPLATE)
 
 
 # @shared_task

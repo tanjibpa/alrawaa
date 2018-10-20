@@ -117,7 +117,8 @@ background-color: #f6f6f6;
 											</tr>
 											<tr style="font-family: &quot;Helvetica Neue&quot;, &quot;Helvetica&quot;, Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">
 												<td class="content-block aligncenter" style="font-family: &quot;Helvetica Neue&quot;, &quot;Helvetica&quot;, Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0 0 20px;" align="center" valign="top">
-													<h4>Check your orders <a href="{{ url }}" style="font-family: &quot;Helvetica Neue&quot;, &quot;Helvetica&quot;, Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; color: #348eda; text-decoration: underline; margin: 0; padding: 0;">Here</a>.</h4>
+													<h4>Download Packing Slips <a href="{% url 'dashboard:order-packing-slips' group_pk=order.pk %}" style="font-family: &quot;Helvetica Neue&quot;, &quot;Helvetica&quot;, Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; color: #348eda; text-decoration: underline; margin: 0; padding: 0;">Here</a>.</h4>
+													<h4>Download Invoice <a href="{% url 'dashboard:order-invoice' order_pk=order.pk %}" style="font-family: &quot;Helvetica Neue&quot;, &quot;Helvetica&quot;, Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; color: #348eda; text-decoration: underline; margin: 0; padding: 0;">Here</a>.</h4>
 												</td>
 											</tr>
 										</table>
