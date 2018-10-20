@@ -6,6 +6,123 @@
 
 {% block content %}
   <div class="home">
+
+      <div class="row home__static-info">
+        <div class="col -sm-12 col-md-4">
+          <p>{% trans "DELIVERY ONLY @ 20 AED | READ" context "Delivery Policy" %} <a href="#" data-toggle="modal" data-target="#deliveryPolicy">DELIVERY POLICY</a></p>
+        </div>
+        <div class="col-sm-12 col-md-4">
+          <a><a href="#" data-toggle="modal" data-target="#aboutUs">{% trans "ABOUT US" context "About Us" %}</a></p>
+        </div>
+        <div class="col-sm-12 col-md-4">
+          <p>{% trans "FREE DELIVERY FOR ORDERS ABOVE 250 AED" context "Minimum Delivery" %}</p>
+        </div>
+
+
+        {# Delivery Policy Modal #}
+        <div class="modal fade" id="deliveryPolicy" tabIndex="-1" role="dialog"
+                   aria-labelledby="deliveryPolicyModalLongTitle" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title" id="deliveryPolicyModalTitle">OUR DELIVERY POLICY</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+
+                <h6>Please make sure your <b>Mobile Number</b> and <b>Address</b> are entered correctly.</h6>
+
+                <h6>Al Rawaa Vape uses several delivery companies to deliver your orders to
+                  you as efficiently and quickly as possible.</h6>
+
+
+                <h6>Please make sure your Mobile Number and Address are entered correctly.
+                   The delivery company will call you to confirm the delivery,
+                  it is very important that you pick the call and confirm the delivery address correctly.</h6>
+                <hr>
+                <h3>Methods of delivery:</h3>
+
+                <h4>Method 1: Normal Delivery:</h4>
+
+                <h6>Delivery charge 20 AED only. Delivery will be <b>Free</b> for orders over 250AED.</h6>
+
+                <h6>All orders confirmed before 8:00PM will be delivered by the next day.(Except Friday)
+                  The orders confirmed after 8:00PM will be delivered the day after.</h6>
+
+                <h6>(On public holidays, deliveries will be off.)</h6>
+
+
+                <h6>Example:</h6>
+
+                <li>Order placed on Wednesday before 8:00 PM → Will be Delivered by Thursday</li>
+                <li>Order placed on Wednesday after 8:00 PM → Will be Delivered by Friday</li>
+                <li>Orders placed Thursday before 8:00 PM will be delivered by Saturday</li>
+                <li>(For same day delivery see Dubai express below)</li>
+                <br>
+                <h4>Method 2: Dubai Express: (Dubai Address Only cash on delivery)</h4>
+                <h6>Delivery charge 40 AED only.</h6>
+                <h6>Same day delivery any orders placed before 2.30 Pm Will be delivered the same evening
+                  between 6-30 PM and 10.00 PM
+                  (Except for Friday – orders placed Friday will be delivered Saturday evening)</h6>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {# About Us Modal #}
+        <div class="modal fade" id="aboutUs" tabIndex="-1" role="dialog"
+                 aria-labelledby="aboutUsModalLongTitle" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="aboutUsModalLongTitle">About Us</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>
+                  Vaping is a modern concept, but it also offers a healthier alternative to smoking.
+                  It’s fun, it’s the newest trend, and it’s a lot better than tobacco products and cigarettes.
+                  If you’re new to vaping, or want to try it for the first time, we’d be happy to help to choose the right products.
+                  We are committed to top service timely delivery and customer satisfaction.</p>
+
+                <p>E-cigarettes don’t produce tar, because they don’t burn (or even contain) tobacco or other plant material.
+                  There are known carcinogens in vapor, but they’re in tiny concentrations that are unlikely
+                  to pose any risk to vapers. Most studies that have raised alarms about cancer risk from vaping have used poor
+                  methods, including using smoking machines to take too-frequent or too-long drags, or vaping at unrealistic
+                  high temperatures on dry wicks. Those things wouldn’t happen to actual vapers, because the result — known
+                  as dry hits or dry puffs — is unbearable to breathe.</p>
+
+                <p>We keep our juice and products prices reasonable so you can enjoy premium vaping products.</p>
+
+                <p>Our goal is to supply to our customers our exceptional quality and services in proving an explicit
+                  vape kits/e-cigarettes, E-juice/e-liquid, and vape accessories and that we conjointly give on-time
+                  delivery.</p>
+
+                <p>Our range of e-liquids, vaping devices, and accessories is massive,we bring to you the best of
+                  flavors/hyped Brands to choose from. This makes the concept of vaping  enjoyable for all, allowing
+                  more people to switch to vapes and avoid tobacco-comprising products. Our products are available
+                  to purchase for all those above "21" and willing to be a vaper.</p>
+
+                <p>So if you’re looking for the best quality of Vapor products at low prices, you’ve definitely come
+                  to the right place.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
       <div class="row">
         <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
           <div class="carousel-inner" role="listbox">

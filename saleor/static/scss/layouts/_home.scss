@@ -88,4 +88,20 @@
       margin: $global-margin * 2 0;
     }
   }
+  &__static-info {
+    color: white;
+    font-size: 0.82rem;
+    text-align: center;
+    font-weight: bolder;
+    background-color: #616161;
+    margin: $global-margin;
+    padding-top: 10px;
+    .modal {
+      color: black;
+      text-align: left;
+      font-weight: normal;
+    }
+  }
+
+
 }
