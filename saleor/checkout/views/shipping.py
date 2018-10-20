@@ -67,6 +67,9 @@ def user_shipping_address_view(request, checkout):
         elif address_form.is_valid():
             checkout.shipping_address = address_form.instance
             return redirect('checkout:shipping-method')
+    # for shipment, shipment_cost, total_with_shipment in checkout.deliveries:
+    #     for item, item_price_per_item, item_price_total in shipment:
+    #         print(item.__dict__)
     return TemplateResponse(
         request, 'checkout/shipping_address.html', context={
             'address_form': address_form, 'user_form': addresses_form,

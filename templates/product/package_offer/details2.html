@@ -59,7 +59,7 @@
 {#    <div id="product-schema-component">#}
 {#      <script type="application/ld+json">{{ json_ld_product_data|safe }}</script>#}
 {#    </div>#}
-    <div class="col-md-6 col-12 product__gallery">
+    <div class="col-sm-12 col-md-4 product__gallery">
       <div className="card mb-6 shadow-sm">
 
         {% with images=product_images %}
@@ -68,10 +68,25 @@
               <div class="carousel-inner" role="listbox">
                 {% for image in images %}
                   <div class="carousel-item{% if forloop.first %} active{% endif %}">
+                  <div class="home--blur-img">
                     <img class="d-block img-fluid"
                          src="{% get_thumbnail image.image method="crop" size="540x540" %}"
                          srcset="{% get_thumbnail image.image method="crop" size="540x540" %} 1x, {% get_thumbnail image.image method="crop" size="1080x1080" %} 2x" alt="">
+                    <div class="card-body">
+{#                      <h2>{{ product.name }}</h2>#}
+                      <div class="home--content btn-group">
+                        <div class="home--content-wrapper">
+                          <div class="home--content-inner">
+                            <h3 class="product-list-item-name" title="{{ product }}">{{ product }}</h3>
+                            <button type="button" class="btn btn-secondary home__button" data-toggle="modal" data-target="#productModal">
+                              Details
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                </div>
                 {% endfor %}
               </div>
               {% if images|length > 1 %}
@@ -82,6 +97,25 @@
                   <svg data-src="{% static "images/gallery_arrow.svg" %}" />
                 </a>
               {% endif %}
+            <div class="modal fade" id="productModal" tabIndex="-1" role="dialog"
+                           aria-labelledby="productModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="productModalLongTitle">{{ product }}</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              {{ product.description|markdown }}
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
   {#            <ol class="carousel-indicators d-none d-md-block">#}
   {#              {% for image in images %}#}
   {#                {% if images|length > 1 %}#}
@@ -101,40 +135,12 @@
                  class="img-fluid">
           {% endif %}
         {% endwith %}
-        <div class="card-body">
-          <h2>{{ product.name }}</h2>
-          <div class="btn-group">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#productModal">
-              Details
-            </button>
-          </div>
-
-          <div class="modal fade" id="productModal" tabIndex="-1" role="dialog"
-               aria-labelledby="productModalLongTitle" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="productModalLongTitle">{{ product }}</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  {{ product.description|markdown }}
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
     <div class="col-md-6 col-12 product__info">
-      <h1 class="product__info__name">
-        {{ product }}
-      </h1>
+{#      <h1 class="product__info__name">#}
+{#        {{ product }}#}
+{#      </h1>#}
       {% if user.is_staff %}
         <p><a href="{% url "dashboard:package-offer-detail" pk=package_offer.id %}">
             {% trans "Edit in dashboard" context "Product details link text" %}

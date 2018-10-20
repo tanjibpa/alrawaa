@@ -290,6 +290,13 @@ class ProductVariant(models.Model, Item):
         return reverse('product:details',
                        kwargs={'slug': slug, 'product_id': product_id})
 
+    def as_package_data(self):
+        return {
+            'product_name': self.product.name,
+            'product_id': self.product.pk,
+            'variant_id': self.pk,
+            'unit_price': str(self.get_price_per_item().gross)}
+
     def as_data(self):
         return {
             'product_name': str(self),

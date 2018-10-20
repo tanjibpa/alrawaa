@@ -37,11 +37,18 @@
               {% for item, item_price_per_item, item_price_total in shipment %}
                 <div class="row">
                   <div class="col-8">
-                    {% if item.data and item.data.package_offer_id %}
+                    {% if item.package_offer_data %}
                       <p><strong>Package Deal: {{ item.variant.product }}</strong> x {{ item.quantity }}<br>
-                      <span class="checkout__review__variant">{{ item.variant }}</span></p>
-                      <span class="checkout__review__variant">{{ item.data.ejuice60.product_name }}</span></p>
-                      <span class="checkout__review__variant">{{ item.data.ejuice100.product_name }}</span></p>
+                        {% for package in item.package_offer_data.packages %}
+{#                          <span class="checkout__review__variant">{{ item.variant }}</span></p>#}
+                          <li>
+                          <span class="checkout__review__variant">{{ package.ejuice60.product_name }} <b>and</b> {{ package.ejuice100.product_name }}</span></p>
+{#                          <span class="checkout__review__variant"></span></p>#}
+                          </li>
+                        {% endfor %}
+{#                      <span class="checkout__review__variant">{{ item.variant }}</span></p>#}
+{#                      <span class="checkout__review__variant">{{ item.data.ejuice60.product_name }}</span></p>#}
+{#                      <span class="checkout__review__variant">{{ item.data.ejuice100.product_name }}</span></p>#}
                     {% else %}
                     <p><strong>{{ item.variant.product }}</strong> x {{ item.quantity }}<br>
                       <span class="checkout__review__variant">{{ item.variant }}</span></p>
@@ -59,7 +66,11 @@
               </div>
               <div class="col-4">
                 <p class="float-right">{% if checkout.shipping_method %}
-                  {% net checkout.shipping_method.get_total %}
+                  {% if checkout.cart.has_package_offer %}
+                    AED0.00
+                  {% else %}
+                    {% net checkout.shipping_method.get_total %}
+                  {% endif %}
                 {% else %}
                   &mdash;
                 {% endif %}</p>

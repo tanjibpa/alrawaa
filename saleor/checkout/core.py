@@ -49,6 +49,7 @@ class Checkout:
         self.discounts = cart.discounts
         self._shipping_method = None
         self._shipping_address = None
+        self.has_package_offer = False
 
     @classmethod
     def from_storage(cls, storage_data, cart, user, tracking_code):
@@ -106,13 +107,20 @@ class Checkout:
         price and the line total.
         """
         for partition in self.cart.partition():
+            is_package_offer = False
+            for p in partition:
+                if p.package_offer_data:
+                    is_package_offer = True
+                    break
+
             if self.shipping_method and partition.is_shipping_required():
                 shipping_cost = self.shipping_method.get_total()
             else:
                 shipping_cost = Price(0, currency=settings.DEFAULT_CURRENCY)
+            if is_package_offer:
+                shipping_cost = Price(0, currency=settings.DEFAULT_CURRENCY)
             total_with_shipping = partition.get_total(
                 discounts=self.cart.discounts) + shipping_cost
-
             partition = [
                 (item,
                  item.get_price_per_item(discounts=self.cart.discounts),
@@ -299,6 +307,7 @@ class Checkout:
         shipping_price = (
             self.shipping_method.get_total() if self.shipping_method
             else Price(0, currency=settings.DEFAULT_CURRENCY))
+
         order_data = {
             'language_code': get_language(),
             'billing_address': billing_address,
@@ -306,6 +315,12 @@ class Checkout:
             'tracking_client_id': self.tracking_code,
             'shipping_price': shipping_price,
             'total': self.get_total()}
+
+        if self.has_package_offer:
+            order_data.update({
+                'has_package_offer': True,
+                'shipping_price': Price(0, currency=settings.DEFAULT_CURRENCY)
+            })
 
         if self.user.is_authenticated:
             order_data['user'] = self.user
@@ -319,6 +334,8 @@ class Checkout:
             order_data['voucher'] = voucher
             order_data['discount_amount'] = discount.amount
             order_data['discount_name'] = discount.name
+
+        print(order_data)
 
         order = Order.objects.create(**order_data)
 

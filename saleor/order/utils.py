@@ -121,12 +121,6 @@ def add_variant_to_delivery_group(
             unit_price_net = price.net
             unit_price_gross = price.gross
 
-        print(variant.product)
-        print(type(price.net))
-        print(price.gross)
-        print(unit_price_net)
-        print(unit_price_gross)
-
         group.lines.create(
             product=variant.product,
             product_name=variant.display_product()[0:128],  # TODO: do something about it
