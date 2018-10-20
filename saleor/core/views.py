@@ -13,6 +13,7 @@ def home(request):
     products_main = products_for_homepage()
     # TODO: Do something better here rather than querying twice
     banner_products = products_for_homepage_banner()
+    # Featured products will show after 6 bannered products
     products = products_with_availability(
         products_main[6:14], discounts=request.discounts, local_currency=request.currency)
     # products_first_row = products_with_availability(
@@ -24,7 +25,6 @@ def home(request):
     products_second_row = products_with_availability(
         banner_products[3:6], discounts=request.discounts, local_currency=request.currency)
     package_offer_images = PackageOfferImage.objects.all()
-    print(package_offer_images)
     return TemplateResponse(
         request, 'home.html',
         {'products': products,

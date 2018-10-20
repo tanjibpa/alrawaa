@@ -86,6 +86,8 @@ class Order(models.Model, ItemSet):
         verbose_name=pgettext_lazy('Order field', 'discount name'),
         max_length=255, default='', blank=True)
 
+    has_package_offer = models.BooleanField(default=False)
+
     objects = OrderQuerySet.as_manager()
 
     class Meta:

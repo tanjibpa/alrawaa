@@ -307,6 +307,7 @@ class Checkout:
         shipping_price = (
             self.shipping_method.get_total() if self.shipping_method
             else Price(0, currency=settings.DEFAULT_CURRENCY))
+
         order_data = {
             'language_code': get_language(),
             'billing_address': billing_address,
@@ -314,6 +315,12 @@ class Checkout:
             'tracking_client_id': self.tracking_code,
             'shipping_price': shipping_price,
             'total': self.get_total()}
+
+        if self.has_package_offer:
+            order_data.update({
+                'has_package_offer': True,
+                'shipping_price': Price(0, currency=settings.DEFAULT_CURRENCY)
+            })
 
         if self.user.is_authenticated:
             order_data['user'] = self.user
@@ -327,6 +334,8 @@ class Checkout:
             order_data['voucher'] = voucher
             order_data['discount_amount'] = discount.amount
             order_data['discount_name'] = discount.name
+
+        print(order_data)
 
         order = Order.objects.create(**order_data)
 

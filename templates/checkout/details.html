@@ -66,7 +66,11 @@
               </div>
               <div class="col-4">
                 <p class="float-right">{% if checkout.shipping_method %}
-                  {% net checkout.shipping_method.get_total %}
+                  {% if checkout.cart.has_package_offer %}
+                    AED0.00
+                  {% else %}
+                    {% net checkout.shipping_method.get_total %}
+                  {% endif %}
                 {% else %}
                   &mdash;
                 {% endif %}</p>
