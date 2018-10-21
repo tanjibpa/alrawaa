@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="viewport" content="width=device-width" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Billing e.g. invoices and receipts</title>
+<link href="styles.css" media="all" rel="stylesheet" type="text/css" />
+</head>
+
+<body itemscope itemtype="http://schema.org/EmailMessage">
+
+<table class="body-wrap">
+	<tr>
+		<td></td>
+		<td class="container" width="600">
+			<div class="content">
+				<table class="main" width="100%" cellpadding="0" cellspacing="0">
+					<tr>
+						<td class="content-wrap aligncenter">
+							<table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+									<td class="content-block">
+										<h1 class="aligncenter">Al Rawaa Vape</h1>
+									</td>
+								</tr>
+								<tr>
+									<td class="content-block">
+										<h2 class="aligncenter">Total price: {% gross order.total html=True %}</h2>
+									</td>
+								</tr>
+								<tr>
+									<td class="content-block aligncenter">
+										<table class="invoice">
+											<tr>
+                                                <td>Order #{{ order.id }}<br>
+												    {{ address.full_name }}<br>
+                                                    Phone: {{ address.phone }}
+                                                    <address>{% include "userprofile/snippets/address-short.html" with address=order.shipping_address %}</address><br>
+                                                    Order date: {{ order.created }}<br>
+                                                </td>
+											</tr>
+											<tr>
+												<td>
+													<table class="invoice-items" cellpadding="0" cellspacing="0">
+                                                        <tr>
+                                                            <th>Product</th>
+                                                            <th>Quantity</th>
+                                                            <th>Price</th>
+                                                        </tr>
+                                                        {% for order_line in orders %}
+                                                            <tr>
+                                                                <td>{{ order_line.product_name }}</td>
+                                                                <td class="alignright"> X {{ order_line.quantity }}</td>
+                                                                <td class="alignright">{{ order_line.unit_price_gross|floatformat:-2 }}</td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                            <tr class="total">
+                                                                <td class="alignright" width="80%">Total</td>
+                                                                <td class="alignright" width="80%"></td>
+                                                                <td class="alignright">{% gross order.total html=True %}</td>
+                                                            </tr>
+													</table>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+                                <tr>
+									<td>
+										<h6>You can check your Orders <a href="{{ url }}">Here</a>.</h6>
+									</td>
+								</tr>
+								<tr>
+									<td class="content-block aligncenter">
+										<a href="https://www.alrawaavape.com">Visit Al Rawaa Vape</a>
+                                        <p>For any query/information/complain <a href="mailto:sales@alrawaavape.com">Send Us a Mail</a>.</p>
+									</td>
+								</tr>
+								<tr>
+									<td class="content-block aligncenter">
+										Follow Us on <a href="#">Facebook</a> and on <a href="#">Instagram</a>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+				<div class="footer">
+					<table width="100%">
+						<tr>
+							<td class="aligncenter content-block">Questions? Email <a href="mailto:sales@alrawaavape.com">sales@alrawaavape.com</a></td>
+						</tr>
+					</table>
+				</div></div>
+		</td>
+		<td></td>
+	</tr>
+</table>
+
+</body>
+</html>
