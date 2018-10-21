@@ -6,14 +6,15 @@ from django.conf import settings
 from django.db import transaction
 from django.forms.models import model_to_dict
 from django.utils.encoding import smart_text
-from django.utils.translation import get_language
+from django.utils.translation import get_language, pgettext_lazy
 from prices import FixedDiscount, Price
+from payments import PaymentStatus
 
 from ..cart.models import Cart
 from ..cart.utils import get_or_empty_db_cart
 from ..core import analytics
 from ..discount.models import NotApplicable, Voucher
-from ..order.models import Order
+from ..order.models import Order, Payment
 from ..order.utils import fill_group_with_partition
 from ..shipping.models import ANY_COUNTRY, ShippingMethodCountry
 from ..userprofile.models import Address
@@ -336,6 +337,31 @@ class Checkout:
             order_data['discount_name'] = discount.name
 
         order = Order.objects.create(**order_data)
+
+        # Create a pre-authorized payment as there's no payment gateway set up
+        # Payment Variant set to default (dummy provider)
+        # Documentation: https://django-payments.readthedocs.io/en/latest
+
+        billing = order.billing_address
+        total = order.get_total()
+        defaults = {'total': total.gross,
+                    'tax': total.tax, 'currency': total.currency,
+                    'delivery': order.shipping_price.gross,
+                    'billing_first_name': billing.first_name,
+                    'billing_last_name': billing.last_name,
+                    'billing_address_1': billing.street_address_1,
+                    'billing_address_2': billing.street_address_2,
+                    'billing_city': billing.city,
+                    'billing_postcode': billing.postal_code,
+                    'billing_country_code': billing.country.code,
+                    'billing_email': order.user_email,
+                    'description': pgettext_lazy(
+                        'Payment description', 'Order %(order_number)s') % {
+                                       'order_number': order},
+                    'billing_country_area': billing.country_area}
+        payment, dummy_created = Payment.objects.get_or_create(
+            variant='default', status=PaymentStatus.PREAUTH, order=order,
+            defaults=defaults)
 
         for partition in self.cart.partition():
             shipping_required = partition.is_shipping_required()
