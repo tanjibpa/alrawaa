@@ -269,6 +269,7 @@ def ship_delivery_group(request, order_pk, group_pk):
             'Shipped %s') % group
         messages.success(request, msg)
         group.order.create_history_entry(comment=msg, user=request.user)
+        order.send_shipped_email()
         return redirect('dashboard:order-details', order_pk=order_pk)
     elif form.errors:
         status = 400
