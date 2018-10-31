@@ -305,9 +305,20 @@ class Checkout:
         self._add_to_user_address_book(
             self.billing_address, is_billing=True)
 
-        shipping_price = (
-            self.shipping_method.get_total() if self.shipping_method
-            else Price(0, currency=settings.DEFAULT_CURRENCY))
+        # shipping_price = (
+        #     self.shipping_method.get_total() if self.shipping_method
+        #     else Price(0, currency=settings.DEFAULT_CURRENCY))
+
+        # Assuming everything has shipping method required
+        if 'cash' in str(self.shipping_method).lower():
+            shipping_price = (
+                self.shipping_method.get_total() if self.get_total() < Price(230, currency=settings.DEFAULT_CURRENCY)
+                else Price(0, currency=settings.DEFAULT_CURRENCY))
+
+        if 'express' in str(self.shipping_method).lower():
+            shipping_price = (
+                self.shipping_method.get_total() if self.get_total() < Price(460, currency=settings.DEFAULT_CURRENCY)
+                else Price(0, currency=settings.DEFAULT_CURRENCY))
 
         order_data = {
             'language_code': get_language(),
