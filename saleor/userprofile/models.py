@@ -49,19 +49,19 @@ class AddressManager(models.Manager):
 
 class Address(models.Model):
     first_name = models.CharField(
-        pgettext_lazy('Address field', 'given name'),
+        pgettext_lazy('Address field', 'First Name'),
         max_length=256, blank=True)
     last_name = models.CharField(
-        pgettext_lazy('Address field', 'family name'),
+        pgettext_lazy('Address field', 'Last Name'),
         max_length=256, blank=True)
     company_name = models.CharField(
         pgettext_lazy('Address field', 'company or organization'),
         max_length=256, blank=True)
     street_address_1 = models.CharField(
-        pgettext_lazy('Address field', 'address'),
+        pgettext_lazy('Address field', 'Address Line 1'),
         max_length=256, blank=True)
     street_address_2 = models.CharField(
-        pgettext_lazy('Address field', 'address'),
+        pgettext_lazy('Address field', 'Address Line 2 (optional)'),
         max_length=256, blank=True)
     city = models.CharField(
         pgettext_lazy('Address field', 'city'),
