@@ -221,8 +221,11 @@ for country in COUNTRIES.keys():
         country_rules = i18naddress.get_validation_rules({})
         UNKNOWN_COUNTRIES.add(country)
 
-COUNTRY_CHOICES = [(code, label) for code, label in COUNTRIES.items()
-                   if code not in UNKNOWN_COUNTRIES]
+# COUNTRY_CHOICES = [(code, label) for code, label in COUNTRIES.items()
+#                    if code not in UNKNOWN_COUNTRIES]
+
+COUNTRY_CHOICES = [('AE', 'United Arab Emirates')]
+
 # Sort choices list by country name
 COUNTRY_CHOICES = sorted(COUNTRY_CHOICES, key=lambda choice: choice[1])
 
