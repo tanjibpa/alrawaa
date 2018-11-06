@@ -89,15 +89,15 @@
     }
   }
   .box-left{
-     //background:url(/static/images/age_verification_background.jpg) 50% 50%;
-    background-color: black;
+     background:url(/static/images/age_verification_background.jpg) 50% 50%;
+    //background-color: black;
     background-size: cover;
     color: #fff;
 
     img{
       position: relative;
       z-index: 4;
-      width: 9em;
+      width: 15em;
     }
 
     &:after{
