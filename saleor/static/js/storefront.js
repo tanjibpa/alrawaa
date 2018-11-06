@@ -1,4 +1,5 @@
 import '../scss/storefront.scss';
+import './components/age_verification';
 
 import './components/mobile/navbar';
 import './components/mobile/search';

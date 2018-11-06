@@ -1,0 +1,140 @@
+/*----------------------------------------------
+-Defualt to border-box
+-----------------------------------------------  */
+*, *:before, *:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+//body {
+//font-size: 100%;
+//
+//  @media (min-width: 32em) {
+//    font-size: 110%
+//  }
+//  @media (min-width: 54em) {
+//    font-size: 111%
+//  }
+//  @media (min-width: 74em) {
+//    font-size: 115%
+//  }
+//
+//  @media (min-width: 96em) {
+//    font-size: 135%
+//  }
+//}
+
+.decor-line {
+	position:	relative;
+	top:	0.7em;
+  border-top: 1px solid #ccc;
+  text-align:center;
+  max-width: 40%;
+  margin: 0.5em auto;
+  display: block;
+  padding: 0.1em 1em;
+  color: #ccc;
+
+  span{
+    background: #fff;
+    color: #ccc;
+    position: relative;
+    top: -.7em;
+    padding: 0.5em;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight:	900;
+  }
+}
+.overlay-verify{
+  background: #000;
+  position:fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.box{
+  background: #fff;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 20%;
+  bottom: 0;
+  margin: 0 auto;
+  z-index: 9;
+  width: 70%;
+  height: 40%;
+  display:table;
+
+  .box-left, .box-right{
+    width: 100%;
+    position: relative;
+    text-align: center;
+    padding: 5%;
+
+    @media (min-width: 54em){
+    	display:table-cell;
+    	vertical-align:middle;
+    	width: 50%;
+    }
+
+    p{
+      //padding: 5%;
+      position: relative;
+      z-index: 3;
+    }
+  }
+  .box-left{
+     //background:url(/static/images/age_verification_background.jpg) 50% 50%;
+    background-color: black;
+    background-size: cover;
+    color: #fff;
+
+    img{
+      position: relative;
+      z-index: 4;
+      width: 9em;
+    }
+
+    &:after{
+      content: '';
+      position: absolute;
+      z-index: 0;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(0,0,0,0.4);
+    }
+  }
+
+  .box-right{
+    text-align: center;
+
+    h3 {
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 1em;
+      margin: 0 auto;
+    }
+    p{
+      color: #aaa;
+    }
+    small{
+      color: #ccc;
+    }
+    .btn{
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      padding: 0.9em 1em 0.7em;
+      margin: 1em auto;
+      display: block;
+    }
+  }
+}
