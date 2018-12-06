@@ -1,4 +1,6 @@
 import logging
+from datetime import datetime, timedelta
+import pytz
 
 from django.conf import settings
 from django.contrib import messages, auth
@@ -9,9 +11,10 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.translation import pgettext_lazy
 from payments import PaymentStatus, RedirectNeeded
+from django.http import JsonResponse
 
 from .forms import PaymentDeleteForm, PaymentMethodsForm, PasswordForm
-from .models import Order, Payment
+from .models import Order, Payment, OrderHistoryEntry
 from .utils import attach_order_to_user, check_order_status
 from ..core.utils import get_client_ip
 from ..registration.forms import LoginForm
@@ -28,6 +31,21 @@ def details(request, token):
     groups = order.groups.all()
     return TemplateResponse(request, 'order/details.html',
                             {'order': order, 'groups': groups})
+
+
+def orders_info_ticker(request):
+    five_days = timedelta(days=5)
+    now = datetime.now(pytz.UTC)
+    five_days_ago = now - five_days
+    orders = OrderHistoryEntry.objects.filter(date__gt=five_days_ago)[:10]
+    message = "{first_name} {last_name} ordered products worth of AED {price}."
+    orders_history = [
+        message.format(
+            first_name=order.user.default_shipping_address.first_name,
+            last_name=order.user.default_shipping_address.last_name,
+            price=order.order.get_total().net) for order in orders]
+    data = {"orders": orders_history}
+    return JsonResponse(data)
 
 
 def payment(request, token):

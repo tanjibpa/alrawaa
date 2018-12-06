@@ -16,4 +16,5 @@ urlpatterns = [
         views.create_password, name='create-password'),
     url(r'^%s/attach/$' % (TOKEN_PATTERN,),
         views.connect_order_with_user, name='connect-order-with-user'),
+    url(r'^order_history/$', views.orders_info_ticker, name='orders-history'),
 ]
