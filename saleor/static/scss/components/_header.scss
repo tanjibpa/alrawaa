@@ -97,8 +97,14 @@
     @media (max-width: 500px) {
       img {
         padding-top: 10px;
-        max-height: 60%;
-        max-width: 60%;
+        max-height: 65%;
+        max-width: 65%;
+      }
+    }
+    @media (max-width: 1600px) {
+      img {
+        -webkit-filter: drop-shadow(5px 5px 5px #000525);
+        filter: drop-shadow(5px 5px 5px #000525);
       }
     }
     svg path {
@@ -122,7 +128,7 @@
     }
   }
   &__brand {
-    background-color: $light-gray;
+    background-color: $white;
     @include media-breakpoint-down(sm) {
       position: fixed;
       top: 0;
