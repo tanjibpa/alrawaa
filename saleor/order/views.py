@@ -38,12 +38,12 @@ def orders_info_ticker(request):
     now = datetime.now(pytz.UTC)
     five_days_ago = now - five_days
     orders = OrderHistoryEntry.objects.filter(date__gt=five_days_ago)[:10]
-    message = "{first_name} {last_name} ordered products worth of AED {price}."
+    message = "{first_name} {last_name} ordered products worth AED {price}"
     orders_history = [
         message.format(
             first_name=order.user.default_shipping_address.first_name,
             last_name=order.user.default_shipping_address.last_name,
-            price=order.order.get_total().net) for order in orders]
+            price=round(order.order.get_total().net)) for order in orders]
     data = {"orders": orders_history}
     return JsonResponse(data)
 

@@ -1,0 +1,47 @@
+/*----------------------------------------------
+-Defualt to border-box
+-----------------------------------------------  */
+*, *:before, *:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+//body {
+//font-size: 100%;
+//
+//  @media (min-width: 32em) {
+//    font-size: 110%
+//  }
+//  @media (min-width: 54em) {
+//    font-size: 111%
+//  }
+//  @media (min-width: 74em) {
+//    font-size: 115%
+//  }
+//
+//  @media (min-width: 96em) {
+//    font-size: 135%
+//  }
+//}
+
+.sticky-order-history {
+  @media (min-width: 54em) {
+    position: fixed;
+    bottom: 1em;
+    left: 1em;
+    background-color: #ffffff;
+    z-index: 100;
+    border-radius: 10px;
+    border: 2px solid #616161;
+    padding: 1px;
+    p {
+      font-weight: bold;
+      padding-top: 1em;
+      //padding-bottom: 0.5rem;
+      text-align: center;
+      vertical-align: center;
+    }
+  }
+
+}
