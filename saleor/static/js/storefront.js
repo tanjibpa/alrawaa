@@ -1,5 +1,6 @@
 import '../scss/storefront.scss';
 import './components/age_verification';
+import './components/order_history_ticker';
 
 import './components/mobile/navbar';
 import './components/mobile/search';
