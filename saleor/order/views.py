@@ -12,6 +12,7 @@ from django.template.response import TemplateResponse
 from django.utils.translation import pgettext_lazy
 from payments import PaymentStatus, RedirectNeeded
 from django.http import JsonResponse
+from django.views.decorators.cache import cache_page
 
 from .forms import PaymentDeleteForm, PaymentMethodsForm, PasswordForm
 from .models import Order, Payment, OrderHistoryEntry
@@ -33,6 +34,7 @@ def details(request, token):
                             {'order': order, 'groups': groups})
 
 
+@cache_page(60 * 15)
 def orders_info_ticker(request):
     five_days = timedelta(days=5)
     now = datetime.now(pytz.UTC)
