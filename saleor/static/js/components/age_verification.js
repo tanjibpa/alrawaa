@@ -1,24 +1,25 @@
 export default $(document).ready((e) => {
   $(window).ready(function ($) {
 
-    if (sessionStorage.getItem('ageVerified') == 'true') {
+    if (!localStorage.getItem('ageVerified')) {
       //sessionStorage.setItem('advertOnce','true');
+      $('.box').removeAttr('hidden');
+      // $('.box').show();
+      $('.overlay-verify').removeAttr('hidden');
+    } else {
       $('.box').hide();
       $('.overlay-verify').hide();
-    } else {
-      $('.box').removeAttr('hidden');
-      $('.box').show();
     }
 
     $('#refresh-page').on('click', function () {
       $('.box').hide();
       $('.overlay-verify').hide();
-      sessionStorage.setItem('ageVerified', 'true');
+      localStorage.setItem('ageVerified', 'true');
     });
 
     $('#reset-session').on('click', function () {
       $('.box').show();
-      sessionStorage.setItem('ageVerified', '');
+      localStorage.removeItem('ageVerified');
     });
 
   });
