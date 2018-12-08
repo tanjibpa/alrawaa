@@ -30,7 +30,6 @@ export default $(document).ready((e) => {
     var orders_text_expire = localStorage.getItem('orders_text_expire');
     var order_texts_cache = localStorage.getItem('order_texts_cache');
     if (!order_texts_cache) {
-      console.log("Here1");
       var now = new Date().getTime();
       localStorage.setItem('orders_text_expire', now);
       getOrdersText();
@@ -39,11 +38,9 @@ export default $(document).ready((e) => {
       var now = new Date().getTime();
       if ((now - parseInt(orders_text_expire)) < 60*60*1000) {
         var order_texts_array = order_texts_cache.split(',');
-        console.log("Here2");
         loop(order_texts_array);
       }
       else {
-        console.log("here3");
         var now = new Date().getTime();
         localStorage.setItem('orders_text_expire', now);
         getOrdersText();
