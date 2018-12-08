@@ -26,7 +26,7 @@
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:image" content="{% static "images/block1.png" %}">
   {% endblock meta_tags %}
-
+  <link href='https://fonts.googleapis.com/css?family=Raleway:600,900,400' rel='stylesheet' type='text/css'>
   <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
   <!--[if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -34,6 +34,50 @@
 </head>
 
 <body>
+  <!-- Load Facebook SDK for JavaScript -->
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+
+  <!-- Your customer chat code -->
+  <div class="fb-customerchat"
+    attribution=setup_tool
+    page_id="1921498207934484">
+  </div>
+
+{# Age verification pop-up #}
+  <article class="box" hidden>
+    <div class="box-left">
+{#      <img src="http://uiclients.com/thinc/assets/images/thinc-drop-white.svg">#}
+      <img src="{% static "images/logo_white.png" %}" width="90%" width="90%" />
+      <p><h2>Al Rawaa Vape products are only intended for 21 years of age and older only.</h2></p>
+    </div>
+    <div class="box-right">
+      <h3>Age Verification</h3>
+      <p><h5>By clicking <b>ENTER</b>, I certify that I am over the age of 21.</h5></p>
+
+      <a href="#" class="btn btn-alpha" id="refresh-page">ENTER</a>
+
+      <p class="decor-line"><span>Or</span></p>
+
+      <a href="https://google.com" class="btn btn-beta" id="reset-session">EXIT</a>
+
+      <small>Always enjoy responsibly.</small>
+    </div>
+    </div>
+  </article>
+
+  <div class="overlay-verify" hidden></div>
+
+  <div class="sticky-order-history">
+    <div id="order-history-ticker"></div>
+  </div>
+
 {% block header %}
   <header class="navbar" role="navigation">
     <div class="navbar__login container-fluid {% if user.is_impersonate %} bg-warning{% endif %}">
@@ -94,9 +138,6 @@
             </div>
             <a href="{% url 'home' %}">
               <img src="{% static "images/logo_alrawaa.png" %}" width="70%" width="70%" />
-
-{#              <img src="{% static "images/logo_alrawaa.png" %}" width="133px" width="616px" />#}
-{#              TODO: Logo would be here. #}
 {#              <svg data-src="{% static "images/logo.svg" %}" height="38px" width="176px"/>#}
             </a>
           </div>
@@ -285,5 +326,6 @@
   {% render_bundle 'storefront' 'js' %}
 {% endblock footer_scripts %}
 <script type="application/ld+json">{{ webpage_schema|safe }}</script>
+
 </body>
 </html>
