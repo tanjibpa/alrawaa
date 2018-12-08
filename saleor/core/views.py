@@ -43,6 +43,10 @@ def styleguide(request):
     return TemplateResponse(request, 'styleguide.html')
 
 
+def privacy_policy(request):
+    return TemplateResponse(request, 'privacy_policy.html')
+
+
 def impersonate(request, uid):
     response = orig_impersonate(request, uid)
     if request.session.modified:
