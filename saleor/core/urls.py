@@ -10,4 +10,5 @@ urlpatterns = [
         name='impersonate-start'),
     url(r'^impersonate/stop/$', views.stop_impersonate,
         name='impersonate-stop'),
+    url(r'^privacy-policy/', views.privacy_policy, name='privacy-policy'),
 ]
