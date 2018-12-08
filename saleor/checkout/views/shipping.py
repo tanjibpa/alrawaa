@@ -9,9 +9,9 @@ from ...userprofile.models import Address
 def anonymous_user_shipping_address_view(request, checkout):
     """Display the shipping step for a user who is not logged in."""
     address_form, preview = get_address_form(
-        request.POST or None, country_code=request.country.code,
+        request.POST or None, country_code='AE',
         autocomplete_type='shipping',
-        initial={'country': request.country.code},
+        initial={'country': 'AE'},
         instance=checkout.shipping_address)
 
     user_form = AnonymousUserShippingForm(
@@ -40,7 +40,7 @@ def user_shipping_address_view(request, checkout):
 
     if shipping_address is not None and shipping_address.id:
         address_form, preview = get_address_form(
-            data, country_code=request.country.code,
+            data, country_code='AE',
             initial={'country': request.country})
         addresses_form = ShippingAddressesForm(
             data, additional_addresses=additional_addresses,
@@ -54,7 +54,7 @@ def user_shipping_address_view(request, checkout):
     else:
         address_form, preview = get_address_form(
             data, initial={'country': request.country},
-            country_code=request.country.code)
+            country_code='AE')
         addresses_form = ShippingAddressesForm(
             data, additional_addresses=additional_addresses)
 
