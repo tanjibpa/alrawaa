@@ -22,6 +22,9 @@ urlpatterns = [
         views.product_bulk_update, name='product-bulk-update'),
     url(r'^add/select-class/$',
         views.product_select_classes, name='product-add-select-class'),
+    url(r'^(?P<pk>[0-9]+)/make-package/', views.product_make_package ,name='make-package'),
+    url(r'^(?P<pk>[0-9]+)/product-add-package/(?P<class_pk>[0-9]+)/',
+        views.product_add_package, name='product-add-package'),
 
     url(r'^classes/$',
         views.product_class_list, name='product-class-list'),

@@ -12,7 +12,7 @@ from django_prices.templatetags.prices_i18n import gross
 from ...core.utils import get_paginator_items
 from ...product.models import (
     AttributeChoiceValue, Product, ProductAttribute, ProductClass,
-    ProductImage, ProductVariant, Stock, StockLocation, PackageOffer)
+    ProductImage, ProductVariant, Stock, StockLocation, PackageOffer, ProductPackage)
 from ...product.utils import (
     get_availability, get_product_costs_data, get_variant_costs_data)
 from ..views import staff_member_required
@@ -287,6 +287,46 @@ def product_edit(request, pk):
     ctx = {'product': product, 'product_form': form,
            'variant_form': variant_form}
     return TemplateResponse(request, 'dashboard/product/form.html', ctx)
+
+
+@staff_member_required
+@permission_required('product.edit_product')
+def product_make_package(request, pk):
+    product = get_object_or_404(
+        Product.objects.prefetch_related('variants'), pk=pk)
+    form = forms.ProductClassMultipleChoice(request.POST or None)
+
+    if form.is_valid():
+        product_class = form.cleaned_data['classes']
+        return redirect('dashboard:product-add-package', pk=pk, class_pk=product_class.id)
+
+    # if product_class:
+    #     product_variant_form = forms.ProductMakePackage(product_class=product_class)
+    #     product_variant = product_class.products.all()
+    #
+    #     ctx.update({'variant_form': product_variant_form})
+
+    ctx = {'form': form}
+    return TemplateResponse(request, 'dashboard/product/make_package.html', ctx)
+
+
+@staff_member_required
+@permission_required('product.edit_product')
+def product_add_package(request, pk, class_pk):
+    product = Product.objects.get(pk=pk)
+    product_class = ProductClass.objects.get(id=class_pk)
+    form = forms.ProductMakePackage(request.POST or None, product_class=product_class)
+
+    if form.is_valid():
+        variants = form.cleaned_data['variants']
+        for variant in variants:
+            p = ProductPackage(product=product,
+                               variant=variant,
+                               product_class=product_class)
+            p.save()
+
+    ctx = {'form': form}
+    return TemplateResponse(request, 'dashboard/product/product_add_package.html', ctx)
 
 
 @staff_member_required

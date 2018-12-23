@@ -143,6 +143,10 @@ class Product(models.Model, ItemRange):
         pgettext_lazy('Product field', 'banner position'), choices=BANNER_POSITIONS, blank=True, null=True)
     package_offer = models.BooleanField(
         pgettext_lazy('Product field', 'package offer'), default=False)
+    # product_package = models.ForeignKey(
+    #     ProductPackage, related_name='product_packages',
+    #     verbose_name=pgettext_lazy('Product package field', 'product package class'),
+    #     on_delete=models.CASCADE)
 
     objects = ProductManager()
 
@@ -228,7 +232,7 @@ class PackageOffer(models.Model):
     device = models.OneToOneField(Product, verbose_name='device for package offer', related_name='device')
     eliquids = models.ManyToManyField(Product, verbose_name='eliquids for package offer', related_name='eliquids')
     coil = models.ForeignKey(Product, null=True, verbose_name='coil for package offer', related_name='coil')
-    battery = models.ForeignKey(Product, null=True, verbose_name='battery for package offer', related_name='battery')
+    battery = models.ForeignKey(Product, null=True, verbose_name='battery for package ProductVariantoffer', related_name='battery')
     price = PriceField(pgettext_lazy('Package offer field', 'price'),
                        currency=settings.DEFAULT_CURRENCY, max_digits=12, decimal_places=2,
                        blank=True, null=True)
@@ -323,8 +327,9 @@ class ProductVariant(models.Model, Item):
         values = get_attributes_display_map(self, attributes)
         if values:
             return ', '.join(
-                ['%s: %s' % (smart_text(attributes.get(id=int(key))),
-                             smart_text(value))
+                ['%s %s: %s' % (smart_text(self.product.name),
+                                smart_text(attributes.get(id=int(key))),
+                                smart_text(value))
                  for (key, value) in values.items()])
         else:
             return smart_text(self.sku)
@@ -564,3 +569,9 @@ class VariantImage(models.Model):
         ProductImage, related_name='variant_images',
         verbose_name=pgettext_lazy('Variant image field', 'image'),
         on_delete=models.CASCADE)
+
+
+class ProductPackage(models.Model):
+    product = models.ForeignKey(Product, related_name='product_package')
+    variant = models.ForeignKey(ProductVariant, related_name='product_package')
+    product_class = models.ForeignKey(ProductClass, related_name='product_package')

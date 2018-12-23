@@ -8,7 +8,7 @@ from django.utils.translation import pgettext_lazy
 
 from ...product.models import (
     AttributeChoiceValue, Product, ProductAttribute, ProductClass,
-    ProductImage, ProductVariant, Stock, StockLocation, VariantImage)
+    ProductImage, ProductVariant, Stock, StockLocation, VariantImage, ProductPackage)
 from .widgets import ImagePreviewWidget
 from . import ProductBulkAction
 
@@ -342,3 +342,27 @@ class ProductBulkUpdate(forms.Form):
 
     def _unpublish_products(self):
         self.cleaned_data['products'].update(is_published=False)
+
+
+
+class ProductClassMultipleChoice(forms.Form):
+    classes = forms.ModelChoiceField(
+        queryset=ProductClass.objects.all()
+    )
+
+
+class ProductMakePackage(forms.Form):
+    variants = forms.ModelMultipleChoiceField(
+        queryset=ProductVariant.objects.none()
+    )
+    # class Meta:
+    #     model = ProductPackage
+    #     fields = ['variant']
+
+    def __init__(self, *args, **kwargs):
+        product_class = kwargs.pop('product_class')
+        super().__init__(*args, **kwargs)
+        products = Product.objects.filter(product_class_id=product_class.id)
+        self.fields['variants'].queryset = ProductVariant.objects.filter(product__in=products)
+
+
