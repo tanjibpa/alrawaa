@@ -327,7 +327,7 @@ class ProductVariant(models.Model, Item):
         values = get_attributes_display_map(self, attributes)
         if values:
             return ', '.join(
-                ['%s %s: %s' % (smart_text(self.product.name),
+                ['%s.. %s: %s' % (smart_text(self.product.name)[:30],
                                 smart_text(attributes.get(id=int(key))),
                                 smart_text(value))
                  for (key, value) in values.items()])
@@ -571,7 +571,30 @@ class VariantImage(models.Model):
         on_delete=models.CASCADE)
 
 
+class ProductPackageInfo(models.Model):
+    name = models.CharField(max_length=200)
+    product = models.ForeignKey(Product, related_name='product_package_info')
+    product_class = models.ForeignKey(ProductClass)
+    # product_package_id = models.ForeignKey(ProductPackage, on_delete=models.CASCADE,
+    #                                        related_name='product_package_info')
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def num_of_products(self):
+        return self.product_package.count()
+
+    # @property
+    # def class_name(self):
+    #     return self.product.product_package.first().pproduct+
+
 class ProductPackage(models.Model):
     product = models.ForeignKey(Product, related_name='product_package')
     variant = models.ForeignKey(ProductVariant, related_name='product_package')
     product_class = models.ForeignKey(ProductClass, related_name='product_package')
+    product_package_info = models.ForeignKey(ProductPackageInfo, on_delete=models.CASCADE,
+                                             related_name='product_package')
+
+    def __str__(self):
+        return self.variant.__str__()

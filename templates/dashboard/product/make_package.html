@@ -79,6 +79,43 @@
         </form>
       </div>
     </div>
+    <div class="row">
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">
+            Products included in this package
+          </span>
+          <div class="row">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Product Type</th>
+                  <th scope="col">Number of Products</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for package_info in product_package_info %}
+                  <tr>
+                    <th scope="row">{{ package_info.id }}</th>
+                    <td>{{ package_info.name }}</td>
+                    <td>{{ package_info.product_class }}</td>
+                    <td>{{ package_info.num_of_products }}</td>
+                    <td>
+                      <a href="#" role="button" class="btn">Edit</a>
+                      <a href="{% url 'dashboard:product-delete-package' pk=product.id package_id=package_info.id %}" role="button" class="btn red">Remove</a>
+                    </td>
+                    <td>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
 {#    {% if variant_form %}#}
 {#    <div class="row">#}
 {#      <div class="col m12 l9">#}

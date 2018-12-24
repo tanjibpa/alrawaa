@@ -23,8 +23,12 @@ urlpatterns = [
     url(r'^add/select-class/$',
         views.product_select_classes, name='product-add-select-class'),
     url(r'^(?P<pk>[0-9]+)/make-package/', views.product_make_package ,name='make-package'),
-    url(r'^(?P<pk>[0-9]+)/product-add-package/(?P<class_pk>[0-9]+)/',
+    url(r'^(?P<pk>[0-9]+)/product-package-info/(?P<class_pk>[0-9]+)/',
+        views.product_package_info, name='product-package-info'),
+    url(r'^(?P<pk>[0-9]+)/product-add-package/(?P<class_pk>[0-9]+)/(?P<package_info_pk>[0-9]+)/',
         views.product_add_package, name='product-add-package'),
+    url(r'^(?P<pk>[0-9]+)/product-delete-package/(?P<package_id>[0-9]+)/',
+        views.product_delete_package, name='product-delete-package'),
 
     url(r'^classes/$',
         views.product_class_list, name='product-class-list'),

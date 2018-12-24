@@ -366,3 +366,5 @@ class ProductMakePackage(forms.Form):
         self.fields['variants'].queryset = ProductVariant.objects.filter(product__in=products)
 
 
+class ProductPackageInfo(forms.Form):
+    name = forms.CharField(max_length=200)
