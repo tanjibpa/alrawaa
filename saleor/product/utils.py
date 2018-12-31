@@ -163,6 +163,34 @@ def get_variant_picker_data(product, discounts=None, local_currency=None):
     variants = product.variants.all()
     data = {'variantAttributes': [], 'variants': []}
 
+    product_packages = product.product_package.all()
+    if product_packages:
+        product_packages_dict = {}
+        for pkg in product_packages:
+            variant = pkg.variant
+            # image of the product
+            image = variant.product.images.first().image
+
+            # Images of different size to render with react
+            variant_images = {
+                'one_x': get_thumbnail(image, size="540x540"),
+                'two_x': get_thumbnail(image, size="1080x1080")
+            }
+
+            variant_data = {
+                'id': variant.id,
+                'name': variant.display_variant(),
+                'product_name': variant.product.name,
+                'description': variant.product.description,
+                'images': variant_images,
+                'url': variant.product.get_absolute_url()}
+
+            product_packages_dict.setdefault(
+                pkg.product_package_info.name, []
+            ).append(variant_data)
+
+        data['product_packages'] = product_packages_dict
+
     variant_attributes = product.product_class.variant_attributes.all()
 
     # Collect only available variants
