@@ -327,9 +327,8 @@ class ProductVariant(models.Model, Item):
         values = get_attributes_display_map(self, attributes)
         if values:
             return ', '.join(
-                ['%s.. %s: %s' % (smart_text(self.product.name)[:30],
-                                smart_text(attributes.get(id=int(key))),
-                                smart_text(value))
+                ['%s: %s' % (smart_text(attributes.get(id=int(key))),
+                             smart_text(value))
                  for (key, value) in values.items()])
         else:
             return smart_text(self.sku)
