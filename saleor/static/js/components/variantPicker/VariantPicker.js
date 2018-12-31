@@ -4,9 +4,11 @@ import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import React, { Component, PropTypes } from 'react';
 
-import AttributeSelectionWidget from './AttributeSelectionWidget';
+import AttributeSelectionWidget from './AttributeSelectionWidget'
+import PackageAttributeSelection from './PackageAttributeSelection';
 import QuantityInput from './QuantityInput';
 import * as queryString from 'query-string';
+import packageStore from "../../stores/variantPickerPackageOffer";
 
 @observer
 export default class VariantPicker extends Component {
@@ -17,16 +19,18 @@ export default class VariantPicker extends Component {
     store: PropTypes.object.isRequired,
     url: PropTypes.string.isRequired,
     variantAttributes: PropTypes.array.isRequired,
-    variants: PropTypes.array.isRequired
+    variants: PropTypes.array.isRequired,
+    productPackages: PropTypes.array
   }
 
   constructor(props) {
     super(props);
-    const { variants } = this.props;
-
+    const { variants, productPackages } = this.props;
     const variant = variants.filter(v => !!Object.keys(v.attributes).length)[0];
     const params = queryString.parse(location.search);
     let selection = {};
+    let packageSelection = {};
+    let packageVariants = [];
     if (Object.keys(params).length) {
       Object.keys(params).some((name) => {
         const valueName = params[name];
@@ -44,11 +48,24 @@ export default class VariantPicker extends Component {
     } else if (Object.keys(variant).length) {
       selection = variant.attributes;
     }
+
     this.state = {
       errors: {},
       quantity: 1,
-      selection: selection
+      selection: selection,
+      // packageSelection: packageSelection,
+      packageVariants: packageVariants
     };
+
+    if (productPackages) {
+      Object.entries(productPackages).forEach(entry => {
+        if (!this.state[entry[0]]) {
+          this.state[entry[0]] = entry[1][0];
+        }
+        packageVariants.push({name: entry[0], variant: entry[1]});
+      });
+    }
+
     this.matchVariantFromSelection();
   }
 
@@ -127,11 +144,17 @@ export default class VariantPicker extends Component {
     store.setVariant(matchedVariant);
   }
 
-  render() {
-    const { store, variantAttributes } = this.props;
-    const { errors, selection, quantity } = this.state;
-    const disableAddToCart = store.isEmpty;
+  handleAttributeChangePackage = (attrName, values) => {
+    this.setState({[attrName.toString()]: values});
+  };
 
+  render() {
+    const { store, variantAttributes, productPackages } = this.props;
+    const { errors, selection, quantity, packageVariants, packageSelection } = this.state;
+    packageVariants.map((attr) => {
+      console.log(attr.variant);
+    });
+    const disableAddToCart = store.isEmpty;
     const addToCartBtnClasses = classNames({
       'btn primary': true,
       'disabled': disableAddToCart
@@ -147,6 +170,14 @@ export default class VariantPicker extends Component {
             selected={selection[attribute.pk]}
           />
         )}
+
+        {packageVariants.map((attr) =>
+          <PackageAttributeSelection
+            attribute={attr}
+            handleChange={this.handleAttributeChangePackage}
+          />
+        )}
+
         <div className="clearfix">
           <QuantityInput
             errors={errors.quantity}

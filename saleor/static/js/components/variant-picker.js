@@ -21,6 +21,7 @@ export default $(document).ready((e) => {
         url={variantPickerContainer.dataset.action}
         variantAttributes={variantPickerData.variantAttributes}
         variants={variantPickerData.variants}
+        productPackages={variantPickerData.product_packages}
       />,
       variantPickerContainer
     );
