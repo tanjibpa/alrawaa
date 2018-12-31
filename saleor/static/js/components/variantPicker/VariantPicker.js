@@ -31,6 +31,7 @@ export default class VariantPicker extends Component {
     let selection = {};
     let packageSelection = {};
     let packageVariants = [];
+    let attrNames = [];
     if (Object.keys(params).length) {
       Object.keys(params).some((name) => {
         const valueName = params[name];
@@ -62,10 +63,12 @@ export default class VariantPicker extends Component {
         if (!this.state[entry[0]]) {
           this.state[entry[0]] = entry[1][0];
         }
+        if (!attrNames.includes(entry[0])) {
+          attrNames.push(entry[0]);
+        }
         packageVariants.push({name: entry[0], variant: entry[1]});
       });
     }
-
     this.matchVariantFromSelection();
   }
 
@@ -151,14 +154,13 @@ export default class VariantPicker extends Component {
   render() {
     const { store, variantAttributes, productPackages } = this.props;
     const { errors, selection, quantity, packageVariants, packageSelection } = this.state;
-    packageVariants.map((attr) => {
-      console.log(attr.variant);
-    });
     const disableAddToCart = store.isEmpty;
     const addToCartBtnClasses = classNames({
       'btn primary': true,
       'disabled': disableAddToCart
     });
+
+    console.log(this.state);
 
     return (
       <div>
