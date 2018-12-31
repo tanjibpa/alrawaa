@@ -34,3 +34,6 @@ webpack-bundle.json
 
 # redis
 *.rdb
+
+# ipynb
+*.ipynb
