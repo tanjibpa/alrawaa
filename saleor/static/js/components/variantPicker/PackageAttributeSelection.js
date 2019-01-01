@@ -16,8 +16,6 @@ export default class PackageAttributeSelection extends Component {
     let var_id = event['srcElement']['options'][selected]['value'];
     let description = this.props.attribute.variant[selected]['description'];
     let images = this.props.attribute.variant[selected]['images'];
-    console.log("FROM PROPS");
-    console.log(this.props.attribute.variant[selected]);
     this.props.handleChange(attrName, this.props.attribute.variant[selected]);
   };
 
