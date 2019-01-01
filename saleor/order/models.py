@@ -14,6 +14,7 @@ from payments import PaymentStatus, PurchasedItem
 from payments.models import BasePayment
 from prices import FixedDiscount, Price
 from satchless.item import ItemLine, ItemSet
+from jsonfield import JSONField
 
 from . import emails, GroupStatus, OrderStatus
 from ..core.utils import build_absolute_uri
@@ -296,6 +297,9 @@ class OrderLine(models.Model, ItemLine):
     unit_price_gross = models.DecimalField(
         pgettext_lazy('Ordered line field', 'unit price (gross)'),
         max_digits=12, decimal_places=4)
+    data = JSONField(
+        blank=True, default={},
+        verbose_name=pgettext_lazy('Cart line field', 'data'))
 
     def __str__(self):
         return self.product_name
