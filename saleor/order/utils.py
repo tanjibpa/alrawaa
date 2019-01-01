@@ -66,29 +66,29 @@ def fill_group_with_partition(group, partition, discounts=None):
     for item in partition:
         add_variant_to_delivery_group(
             group, item.variant, item.get_quantity(), discounts,
-            add_to_existing=False)
-        if item.data and item.data.get('package_offer_id'):
-            coil_variant = ProductVariant.objects.get(id=item.data['coil']['variant_id'])
-            battery_variant = ProductVariant.objects.get(id=item.data['battery']['variant_id'])
-            ejuice60_variant = ProductVariant.objects.get(id=item.data['ejuice60']['variant_id'])
-            ejuice100_variant = ProductVariant.objects.get(id=item.data['ejuice100']['variant_id'])
-
-            add_variant_to_delivery_group(
-                group, coil_variant, item.get_quantity(), discounts,
-                add_to_existing=True, package_offer=True)
-            add_variant_to_delivery_group(
-                group, battery_variant, item.get_quantity(), discounts,
-                add_to_existing=False, package_offer=True)
-            add_variant_to_delivery_group(
-                group, ejuice60_variant, item.get_quantity(), discounts,
-                add_to_existing=False, package_offer=True)
-            add_variant_to_delivery_group(
-                group, ejuice100_variant, item.get_quantity(), discounts,
-                add_to_existing=False, package_offer=True)
+            add_to_existing=False, data=item.data)
+        # if item.data and item.data.get('package_offer_id'):
+        #     coil_variant = ProductVariant.objects.get(id=item.data['coil']['variant_id'])
+        #     battery_variant = ProductVariant.objects.get(id=item.data['battery']['variant_id'])
+        #     ejuice60_variant = ProductVariant.objects.get(id=item.data['ejuice60']['variant_id'])
+        #     ejuice100_variant = ProductVariant.objects.get(id=item.data['ejuice100']['variant_id'])
+        #
+        #     add_variant_to_delivery_group(
+        #         group, coil_variant, item.get_quantity(), discounts,
+        #         add_to_existing=True, package_offer=True)
+        #     add_variant_to_delivery_group(
+        #         group, battery_variant, item.get_quantity(), discounts,
+        #         add_to_existing=False, package_offer=True)
+        #     add_variant_to_delivery_group(
+        #         group, ejuice60_variant, item.get_quantity(), discounts,
+        #         add_to_existing=False, package_offer=True)
+        #     add_variant_to_delivery_group(
+        #         group, ejuice100_variant, item.get_quantity(), discounts,
+        #         add_to_existing=False, package_offer=True)
 
 
 def add_variant_to_delivery_group(
-    group, variant, total_quantity, discounts=None, add_to_existing=True, package_offer=False):
+    group, variant, total_quantity, discounts=None, add_to_existing=True, package_offer=False, data=None):
     """Adds total_quantity of variant to group.
     Raises InsufficientStock exception if quantity could not be fulfilled.
 
@@ -129,7 +129,9 @@ def add_variant_to_delivery_group(
             unit_price_net=unit_price_net,
             unit_price_gross=unit_price_gross,
             stock=stock,
-            stock_location=stock.location.name)
+            stock_location=stock.location.name,
+            data=data
+        )
         Stock.objects.allocate_stock(stock, quantity)
         # refresh stock for accessing quantity_allocated
         stock.refresh_from_db()
