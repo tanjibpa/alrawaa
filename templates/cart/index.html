@@ -45,33 +45,14 @@
               <img src="{% get_thumbnail line.variant.product.images.first.image method="crop" size="60x60" %}"
                    srcset="{% get_thumbnail line.variant.product.images.first.image method="crop" size="60x60" %} 1x, {% get_thumbnail line.variant.product.images.first.image method="crop" size="120x120" %} 2x"
                    alt="">
-                {% if line.type == 'package' %}
-                  <p>Package deal: {{ line.variant.product }}
-                    <br>
-                      <small>{{ line.variant }}
-                      <br>
-                      <br>
-                        <b>Packages: </b><br>
-                        {% for package in line.packages %}
-                          <li>
-                          <b>60 ml ejuice:</b>
-                          {{ package.ejuice60.product_name }} ||
-                          <b>100 ml ejuice:</b>
-                          {{ package.ejuice100.product_name }}
-                          </li>
-                        {% endfor %}
-{#                      {% for ejuice60 in line.ejuice60_variant  %}#}
-{#                        <li>{{ ejuice60 }}</li>#}
-{#                      {% endfor %}#}
-{#                        <b>100 ml ejuices:</b>#}
-{#                      {% for ejuice100 in line.ejuice100_variant  %}#}
-{#                        <li>100 ml Ejuice: {{ ejuice100 }}</li>#}
-{#                      {% endfor %}#}
-                    </small>
-                {% else %}
-                  <p>{{ line.variant.product }}
-                  <br><small>{{ line.variant }}</small></p>
-                {% endif %}
+              <p>{{ line.variant.product }}
+              <br><small>{{ line.variant }}</small></p>
+              {% if line.data %}
+                <br>
+                {% for d in line.data.packages %}
+                  <p><small>{{ d.product_name }}</small> | <small>{{ d.variant_name }}</small></p><br>
+                {% endfor %}
+              {% endif %}
             </a>
           </div>
           <div class="col-5">
