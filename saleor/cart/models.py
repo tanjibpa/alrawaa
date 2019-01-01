@@ -214,29 +214,28 @@ class Cart(models.Model):
         If `replace` is truthy then any previous quantity is discarded instead
         of added to.
         """
-        if package_offer_data:
-            cart_line, dummy_created = self.lines.get_or_create(
-                variant=variant, defaults={'quantity': 0, 'data': data or {}})
-            if cart_line.package_offer_data:
-                p_data = package_offer_data.get('packages')[0]
-                # print(p_data)
-                print(cart_line.package_offer_data['packages'])
-                cart_line.package_offer_data.get('packages').append(p_data)
-                # ejuice60 = cart_line.package_offer_data.get('ejuice60')
-                # ejuice100 = cart_line.package_offer_data.get('ejuice100')
-                # if ejuice60:
-                #     ejuice60.append(package_offer_data['ejuice60'][0])
-                # if ejuice100:
-                #     ejuice100.append(package_offer_data['ejuice60'][0])
-                cart_line.save()
-            else:
-                cart_line, dummy_created = self.lines.update_or_create(
-                    variant=variant, defaults={'quantity': 0,
-                                               'data': data or {},
-                                               'package_offer_data': package_offer_data})
-        else:
-            cart_line, dummy_created = self.lines.get_or_create(
-                variant=variant, defaults={'quantity': 0, 'data': data or {}})
+        # if package_offer_data:
+        #     cart_line, dummy_created = self.lines.get_or_create(
+        #         variant=variant, defaults={'quantity': 0, 'data': data or {}})
+        #     if cart_line.package_offer_data:
+        #         p_data = package_offer_data.get('packages')[0]
+        #         # print(p_data)
+        #         cart_line.package_offer_data.get('packages').append(p_data)
+        #         # ejuice60 = cart_line.package_offer_data.get('ejuice60')
+        #         # ejuice100 = cart_line.package_offer_data.get('ejuice100')
+        #         # if ejuice60:
+        #         #     ejuice60.append(package_offer_data['ejuice60'][0])
+        #         # if ejuice100:
+        #         #     ejuice100.append(package_offer_data['ejuice60'][0])
+        #         cart_line.save()
+        #     else:
+        #         cart_line, dummy_created = self.lines.update_or_create(
+        #             variant=variant, defaults={'quantity': 0,
+        #                                        'data': data or {},
+        #                                        'package_offer_data': package_offer_data})
+        # else:
+        cart_line, dummy_created = self.lines.get_or_create(
+            variant=variant, data=data or {}, defaults={'quantity': 0})
         if replace:
             new_quantity = quantity
         else:
