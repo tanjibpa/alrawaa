@@ -106,14 +106,14 @@ def get_availability(product, discounts=None, local_currency=None):
         discount_local_currency=discount_local_currency)
 
 
-def handle_cart_form(request, product, create_cart=False, package_offer=None):
+def handle_cart_form(request, product, create_cart=False, package_data=None):
     if create_cart:
         cart = get_or_create_cart_from_request(request)
     else:
         cart = get_cart_from_request(request)
     form = ProductForm(
         cart=cart, product=product, data=request.POST or None,
-        discounts=request.discounts, package_offer=package_offer)
+        discounts=request.discounts, package_data=package_data)
     return form, cart
 
 
