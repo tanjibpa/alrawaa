@@ -297,6 +297,7 @@ class ProductVariant(models.Model, Item):
     def as_package_data(self):
         return {
             'product_name': self.product.name,
+            'variant_name': str(self),
             'product_id': self.product.pk,
             'variant_id': self.pk,
             'unit_price': str(self.get_price_per_item().gross)}
