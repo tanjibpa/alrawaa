@@ -289,6 +289,9 @@
                   <tr class="last-no-border">
                     <td>
                       {{ line.product_name }}<br>
+                      {% for prod in line.data.packages %}
+                        <small>{{ forloop.counter }}. {{ prod.product_name }}</small> | <small>{{ prod.variant_name }}</small><br>
+                      {% endfor %}
                     </td>
                     <td>
                       {{ line.product_sku }}
