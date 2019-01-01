@@ -36,7 +36,9 @@ def index(request, cart):
             'variant': line.variant,
             'get_price_per_item': line.get_price_per_item(discounts),
             'get_total': line.get_total(discounts=discounts),
-            'form': form}
+            'form': form,
+            'data': line.data
+        }
 
         packages = line.package_offer_data.get('packages')
         if line.package_offer_data and packages:

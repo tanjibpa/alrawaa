@@ -37,22 +37,18 @@
               {% for item, item_price_per_item, item_price_total in shipment %}
                 <div class="row">
                   <div class="col-8">
-                    {% if item.package_offer_data %}
-                      <p><strong>Package Deal: {{ item.variant.product }}</strong> x {{ item.quantity }}<br>
-                        {% for package in item.package_offer_data.packages %}
-{#                          <span class="checkout__review__variant">{{ item.variant }}</span></p>#}
-                          <li>
-                          <span class="checkout__review__variant">{{ package.ejuice60.product_name }} <b>and</b> {{ package.ejuice100.product_name }}</span></p>
-{#                          <span class="checkout__review__variant"></span></p>#}
-                          </li>
+                    <p>
+                      <strong>{{ item.variant.product }}</strong> x {{ item.quantity }}<br>
+                      <span class="checkout__review__variant">{{ item.variant }}</span>
+                      {% if item.data %}
+                        <br>
+                        {% for d in item.data.packages %}
+                          <span class="checkout__review__variant">
+                            <strong>{{ forloop.counter }}. </strong><small>{{ d.product_name }}</small> | <small>{{ d.variant_name }}</small><br>
+                          </span>
                         {% endfor %}
-{#                      <span class="checkout__review__variant">{{ item.variant }}</span></p>#}
-{#                      <span class="checkout__review__variant">{{ item.data.ejuice60.product_name }}</span></p>#}
-{#                      <span class="checkout__review__variant">{{ item.data.ejuice100.product_name }}</span></p>#}
-                    {% else %}
-                    <p><strong>{{ item.variant.product }}</strong> x {{ item.quantity }}<br>
-                      <span class="checkout__review__variant">{{ item.variant }}</span></p>
-                    {% endif %}
+                      {% endif %}
+                    </p>
                   </div>
                   <div class="col-4">
                     <p class="float-right">{% net item_price_total %}</p>
@@ -66,11 +62,7 @@
               </div>
               <div class="col-4">
                 <p class="float-right">{% if checkout.shipping_method %}
-                  {% if checkout.cart.has_package_offer %}
-                    AED0.00
-                  {% else %}
-                    {% net checkout.shipping_method.get_total %}
-                  {% endif %}
+                  {% net checkout.shipping_method.get_total %}
                 {% else %}
                   &mdash;
                 {% endif %}</p>

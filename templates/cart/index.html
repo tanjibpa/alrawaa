@@ -50,7 +50,7 @@
               {% if line.data %}
                 <br>
                 {% for d in line.data.packages %}
-                  <p><small>{{ d.product_name }}</small> | <small>{{ d.variant_name }}</small></p><br>
+                  <p><small>{{ forloop.counter }}. {{ d.product_name }}</small> | <small>{{ d.variant_name }}</small></p><br>
                 {% endfor %}
               {% endif %}
             </a>
