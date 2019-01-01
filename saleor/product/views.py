@@ -70,6 +70,7 @@ def product_details(request, slug, product_id, form=None):
     product_attributes = get_product_attributes_data(product)
     show_variant_picker = all([v.attributes for v in product.variants.all()])
     json_ld_data = product_json_ld(product, availability, product_attributes)
+
     return TemplateResponse(
         request, 'product/details.html',
         {'is_visible': is_visible,
@@ -82,7 +83,9 @@ def product_details(request, slug, product_id, form=None):
          'variant_picker_data': json.dumps(
              variant_picker_data, default=serialize_decimal),
          'json_ld_product_data': json.dumps(
-             json_ld_data, default=serialize_decimal)})
+             json_ld_data, default=serialize_decimal),
+         'product_packages': True if variant_picker_data.get('product_packages', None) else False
+         })
 
 
 def product_add_to_cart(request, slug, product_id):
@@ -146,10 +149,16 @@ def product_add_to_cart(request, slug, product_id):
                               'battery': battery_variant.as_package_data(),
                               'ejuice60': ejuice60_variant.as_package_data(),
                               'ejuice100': ejuice100_variant.as_package_data()})
-
+    package_data = request.POST.get('package_data')
+    package_ids = json.loads(package_data) if package_data else None
+    packages = []
+    if package_ids:
+        for package_id  in package_ids:
+            p = get_object_or_404(ProductVariant, id=package_id)
+            packages.append(p.as_package_data())
     products = products_for_cart(user=request.user)
     product = get_object_or_404(products, pk=product_id)
-    form, cart = handle_cart_form(request, product, create_cart=True, package_offer=package_offer or None)
+    form, cart = handle_cart_form(request, product, create_cart=True, package_data=packages or None)
     if form.is_valid():
         form.save()
         if request.is_ajax():
@@ -279,7 +288,7 @@ def package_offer_details(request, slug, product_id, form=None):
     show_variant_picker = all([v.attributes for v in product.variants.all()])
     # json_ld_data = product_json_ld(product, availability, product_attributes)
     # print(get_ejuice_variant_pina tcker_data(ejuices_60))
-    print(json.dumps(get_ejuice_variant_picker_data(ejuices_60), default=serialize_decimal))
+    # print(json.dumps(get_ejuice_variant_picker_data(ejuices_60), default=serialize_decimal))
     return TemplateResponse(
         request, 'product/package_offer/details2.html',
         {'form': form,
