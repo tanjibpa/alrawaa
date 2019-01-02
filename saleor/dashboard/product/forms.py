@@ -5,6 +5,7 @@ from django.forms.widgets import CheckboxSelectMultiple
 from django.utils.encoding import smart_text
 from django.utils.text import slugify
 from django.utils.translation import pgettext_lazy
+from django.forms import ModelMultipleChoiceField
 
 from ...product.models import (
     AttributeChoiceValue, Product, ProductAttribute, ProductClass,
@@ -351,13 +352,15 @@ class ProductClassMultipleChoice(forms.Form):
     )
 
 
+class PackageModelChoiceField(ModelMultipleChoiceField):
+    def label_from_instance(self, obj):
+        return "%s.. %s" % (str(obj.display_product())[:35], obj)
+
+
 class ProductMakePackage(forms.Form):
-    variants = forms.ModelMultipleChoiceField(
+    variants = PackageModelChoiceField(
         queryset=ProductVariant.objects.none()
     )
-    # class Meta:
-    #     model = ProductPackage
-    #     fields = ['variant']
 
     def __init__(self, *args, **kwargs):
         product_class = kwargs.pop('product_class')

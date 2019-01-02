@@ -334,7 +334,6 @@ def product_add_package(request, pk, class_pk, package_info_pk):
     product_class = ProductClass.objects.get(id=class_pk)
     product_package_info = ProductPackageInfo.objects.get(id=package_info_pk)
     form = forms.ProductMakePackage(request.POST or None, product_class=product_class)
-
     if form.is_valid():
         variants = form.cleaned_data['variants']
         for variant in variants:
@@ -343,6 +342,31 @@ def product_add_package(request, pk, class_pk, package_info_pk):
                                product_class=product_class,
                                product_package_info=product_package_info)
             p.save()
+        return redirect('dashboard:make-package', pk=pk)
+
+    ctx = {'form': form}
+    return TemplateResponse(request, 'dashboard/product/product_add_package.html', ctx)
+
+
+@staff_member_required
+@permission_required('product.edit_product')
+def product_edit_package(request, pk, package_id):
+    product = Product.objects.get(pk=pk)
+    package_info = get_object_or_404(ProductPackageInfo, id=package_id)
+    # product_package_info = ProductPackageInfo.objects.get(id=package_info_pk)
+    form = forms.ProductMakePackage(request.POST or None,
+        initial={'variants': [str(pkg.variant.id) for pkg in package_info.product_package.all()]},
+        product_class=package_info.product_class)
+    if form.is_valid():
+        product_packages = [pkg.delete() for pkg in package_info.product_package.all()]
+        variants = form.cleaned_data['variants']
+        for variant in variants:
+            p = ProductPackage(product=product,
+                               variant=variant,
+                               product_class=package_info.product_class,
+                               product_package_info=package_info)
+            p.save()
+        return redirect('dashboard:make-package', pk=pk)
 
     ctx = {'form': form}
     return TemplateResponse(request, 'dashboard/product/product_add_package.html', ctx)

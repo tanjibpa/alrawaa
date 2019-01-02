@@ -103,7 +103,7 @@
                     <td>{{ package_info.product_class }}</td>
                     <td>{{ package_info.num_of_products }}</td>
                     <td>
-                      <a href="#" role="button" class="btn">Edit</a>
+                      <a href="{% url 'dashboard:product-edit-package' pk=product.id package_id=package_info.id  %}" role="button" class="btn">Edit</a>
                       <a href="{% url 'dashboard:product-delete-package' pk=product.id package_id=package_info.id %}" role="button" class="btn red">Remove</a>
                     </td>
                     <td>

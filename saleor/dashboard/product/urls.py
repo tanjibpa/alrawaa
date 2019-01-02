@@ -27,6 +27,8 @@ urlpatterns = [
         views.product_package_info, name='product-package-info'),
     url(r'^(?P<pk>[0-9]+)/product-add-package/(?P<class_pk>[0-9]+)/(?P<package_info_pk>[0-9]+)/',
         views.product_add_package, name='product-add-package'),
+    url(r'(?P<pk>[0-9]+)/product-edit-package/(?P<package_id>[0-9]+)/',
+        views.product_edit_package, name='product-edit-package'),
     url(r'^(?P<pk>[0-9]+)/product-delete-package/(?P<package_id>[0-9]+)/',
         views.product_delete_package, name='product-delete-package'),
 
