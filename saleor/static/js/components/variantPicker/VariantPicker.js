@@ -68,20 +68,30 @@ export default class VariantPicker extends Component {
         }
         packageVariants.push({name: entry[0], variant: entry[1]});
       });
+      this.state['attrNames'] = attrNames;
     }
+
     this.matchVariantFromSelection();
   }
 
   handleAddToCart = () => {
     const { onAddToCartSuccess, onAddToCartError, store } = this.props;
-    const { quantity } = this.state;
+    const { quantity, attrNames } = this.state;
+    var packageData = [];
+
+    for (var i=0; i < attrNames.length; i++) {
+      var attr_name = attrNames[i];
+      var package_data = this.state[attr_name];
+      packageData.push(package_data.id);
+    }
     if (quantity > 0 && !store.isEmpty) {
       $.ajax({
         url: this.props.url,
         method: 'post',
         data: {
           quantity: quantity,
-          variant: store.variant.id
+          variant: store.variant.id,
+          package_data: JSON.stringify(packageData)
         },
         success: () => {
           onAddToCartSuccess();
