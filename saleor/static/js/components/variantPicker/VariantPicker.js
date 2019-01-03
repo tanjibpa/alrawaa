@@ -67,6 +67,7 @@ export default class VariantPicker extends Component {
           attrNames.push(entry[0]);
         }
         packageVariants.push({name: entry[0], variant: entry[1]});
+        packageStore.setPackageDetails(entry[0], entry[1])
       });
       this.state['attrNames'] = attrNames;
     }
@@ -159,6 +160,8 @@ export default class VariantPicker extends Component {
 
   handleAttributeChangePackage = (attrName, values) => {
     this.setState({[attrName.toString()]: values});
+    packageStore.setPackageDetails(attrName, values);
+    console.log(packageStore.PackageDetails);
   };
 
   render() {
@@ -169,8 +172,6 @@ export default class VariantPicker extends Component {
       'btn primary': true,
       'disabled': disableAddToCart
     });
-
-    console.log(this.state);
 
     return (
       <div>
@@ -187,6 +188,7 @@ export default class VariantPicker extends Component {
           <PackageAttributeSelection
             attribute={attr}
             handleChange={this.handleAttributeChangePackage}
+            store={packageStore}
           />
         )}
 

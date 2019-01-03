@@ -82,6 +82,11 @@
       <tr>
         <td>
           {{ item.product_name|truncatechars:30 }}<br>
+          {% if item.data %}
+            {% for d in item.data.packages %}
+              {{ d.product_name|truncatechars:40 }}<br>
+            {% endfor %}
+          {% endif %}
         </td>
         <td>
           {{ item.product_sku }}
