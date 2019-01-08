@@ -71,7 +71,6 @@ export default class VariantPicker extends Component {
       });
       this.state['attrNames'] = attrNames;
     }
-
     this.matchVariantFromSelection();
   }
 
@@ -80,10 +79,12 @@ export default class VariantPicker extends Component {
     const { quantity, attrNames } = this.state;
     var packageData = [];
 
-    for (var i=0; i < attrNames.length; i++) {
-      var attr_name = attrNames[i];
-      var package_data = this.state[attr_name];
-      packageData.push(package_data.id);
+    if (attrNames) {
+      for (var i=0; i < attrNames.length; i++) {
+        var attr_name = attrNames[i];
+        var package_data = this.state[attr_name];
+        packageData.push(package_data.id);
+      }
     }
     if (quantity > 0 && !store.isEmpty) {
       $.ajax({
@@ -161,7 +162,6 @@ export default class VariantPicker extends Component {
   handleAttributeChangePackage = (attrName, values) => {
     this.setState({[attrName.toString()]: values});
     packageStore.setPackageDetails(attrName, values);
-    console.log(packageStore.PackageDetails);
   };
 
   render() {
