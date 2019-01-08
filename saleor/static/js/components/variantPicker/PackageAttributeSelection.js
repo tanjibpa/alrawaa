@@ -22,7 +22,6 @@ export default class PackageAttributeSelection extends Component {
 
   render() {
     const { attribute, store } = this.props;
-    console.log(store.PackageDetails['Battery'][0]);
     let trimmedId = attribute.name.toString().split(' ').join('');
     return (
       <div className="variant-picker">

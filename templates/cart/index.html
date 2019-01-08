@@ -45,8 +45,8 @@
               <img src="{% get_thumbnail line.variant.product.images.first.image method="crop" size="60x60" %}"
                    srcset="{% get_thumbnail line.variant.product.images.first.image method="crop" size="60x60" %} 1x, {% get_thumbnail line.variant.product.images.first.image method="crop" size="120x120" %} 2x"
                    alt="">
-              <p>{{ line.variant.product }}
-              <br><small>{{ line.variant }}</small></p>
+              <p id="line-id" value="{{ line.line_id }}">{{ line.variant.product }}
+              <br><small>{{ line.form.variant }}</small></p>
               {% if line.data %}
                 <br>
                 {% for d in line.data.packages %}

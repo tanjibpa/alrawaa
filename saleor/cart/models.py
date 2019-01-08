@@ -194,19 +194,23 @@ class Cart(models.Model):
         return self.lines.create(
             variant=variant, quantity=quantity, data=data or {})
 
-    def get_line(self, variant, data=None):
+    def get_line(self, variant, data=None, line_id=None):
         """Return a line matching the given variant and data if any."""
         all_lines = self.lines.all()
-        if data is None:
-            data = {}
-        line = [line for line in all_lines
-                if line.variant_id == variant.id and line.data == data]
+        # if data is None:
+        #     data = {}
+        if line_id:
+            line = [line for line in all_lines
+                    if line.variant_id == variant.id and line.id == line_id]
+        else:
+            line = [line for line in all_lines
+                    if line.variant_id == variant.id]
         if line:
             return line[0]
 
     def add(self, variant, quantity=1, data=None, replace=False,
-            check_quantity=True, package_offer_data=None):
-        """Add a product vartiant to cart.
+            check_quantity=True, cart_line=None):
+        """Add a product variant to cart.
 
         The `data` parameter may be used to differentiate between items with
         different customization options.
@@ -234,8 +238,9 @@ class Cart(models.Model):
         #                                        'data': data or {},
         #                                        'package_offer_data': package_offer_data})
         # else:
-        cart_line, dummy_created = self.lines.get_or_create(
-            variant=variant, data=data or {}, defaults={'quantity': 0})
+        if not cart_line:
+            cart_line, dummy_created = self.lines.get_or_create(
+                variant=variant, data=data or {}, defaults={'quantity': 0})
         if replace:
             new_quantity = quantity
         else:

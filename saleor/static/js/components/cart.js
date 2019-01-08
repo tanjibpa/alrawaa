@@ -73,6 +73,7 @@ export default $(document).ready((e) => {
     let $qunatityError = $(this).find('.cart__line__quantity-error');
     let $subtotal = $(this).find('.cart-item-price p');
     let $deleteIcon = $(this).find('.cart-item-delete');
+    let $line_id = $(this).find('#line-id').attr('value');
     $(this).on('change', $quantityInput, (e) => {
       let newQuantity = $quantityInput.val();
       $.ajax({
@@ -102,10 +103,14 @@ export default $(document).ready((e) => {
       });
     });
     $deleteIcon.on('click', (e) => {
+      let data = {quantity: 0};
+      if ($line_id) {
+        data['line_id'] = $line_id;
+      }
       $.ajax({
         url: cartFormUrl,
         method: 'POST',
-        data: {quantity: 0},
+        data: data,
         success: (response) => {
           if (response.cart.numLines >= 1) {
             $(this).fadeOut();

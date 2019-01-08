@@ -37,11 +37,12 @@ def index(request, cart):
             'get_price_per_item': line.get_price_per_item(discounts),
             'get_total': line.get_total(discounts=discounts),
             'form': form,
-            'data': line.data
+            'data': line.data,
+            'line_id': line.id
         }
 
-        packages = line.package_offer_data.get('packages')
-        if line.package_offer_data and packages:
+        # packages = line.package_offer_data.get('packages')
+        # if line.package_offer_data and packages:
             # coil_variant = ProductVariant.objects.get(id=line.data['coil_variant'])
             # battery_variant = ProductVariant.objects.get(id=line.data['battery_variant'])
             # ejuice60_variant = ProductVariant.objects.get(id=line.data['ejuice60_variant'])
@@ -50,7 +51,7 @@ def index(request, cart):
             # line.data['coil_variant'] = {'name': coil_variant.product.name, 'variant': coil_variant.id}
             # line.save()
 
-            packages = [package for package in packages]
+            # packages = [package for package in packages]
 
             # line_append.update({
             #     'type': 'package',
@@ -60,11 +61,11 @@ def index(request, cart):
             #     'ejuice60_variant': [ejuice60['product_name'] for ejuice60 in line.package_offer_data['ejuice60']],
             #     'ejuice100_variant': [ejuice100['product_name'] for ejuice100 in line.package_offer_data['ejuice100']]
             # })
-            line_append.update({
-                'type': 'package',
-                'package_offer_id': packages[0].get('package_offer_id'),
-                'packages': packages
-            })
+            # line_append.update({
+            #     'type': 'package',
+            #     'package_offer_id': packages[0].get('package_offer_id'),
+            #     'packages': packages
+            # })
         cart_lines.append(line_append)
 
     default_country = get_user_shipping_country(request)
@@ -78,7 +79,6 @@ def index(request, cart):
         'country_form': country_form,
         'default_country_options': default_country_options}
     ctx.update(cart_data)
-
     return TemplateResponse(
         request, 'cart/index.html', ctx)
 

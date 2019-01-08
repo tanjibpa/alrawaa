@@ -115,7 +115,10 @@ class ReplaceCartLineForm(AddToCartForm):
         self.variant = kwargs.pop('variant')
         kwargs['product'] = self.variant.product
         super().__init__(*args, **kwargs)
-        self.cart_line = self.cart.get_line(self.variant)
+        line_id = kwargs.get('line_id')
+        self.cart_line = self.cart.get_line(self.variant, line_id=line_id if line_id else None)
+        # else:
+        #     self.cart_line = self.cart.get_line(self.variant)
         self.fields['quantity'].widget.attrs = {
             'min': 1, 'max': settings.MAX_CART_LINE_QUANTITY}
 
@@ -152,7 +155,7 @@ class ReplaceCartLineForm(AddToCartForm):
         """Replace the selected product's quantity in cart."""
         product_variant = self.get_variant(self.cleaned_data)
         return self.cart.add(product_variant, self.cleaned_data['quantity'],
-                             replace=True)
+                             replace=True, cart_line=self.cart_line)
 
 
 class CountryForm(forms.Form):
